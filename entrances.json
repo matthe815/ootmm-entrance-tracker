@@ -1,0 +1,113 @@
+[
+  { "name": "Kokiri Forest", "entrances": [
+    { "name": "KF Hyrule Field", "type": "exterior" },
+    { "name": "KF Lost Woods", "type": "exterior" },
+    { "name": "KF Deku Tree", "type": "dungeon" },
+    { "name": "KF Storms Grotto", "type": "grotto" },
+    { "name": "KF Link's House", "type": "interior" }
+  ] },
+  { "name": "Lost Woods", "entrances": [
+    { "name": "LW Kokiri Forest", "type": "exterior" },
+    { "name": "LW Sacred Forest Meadow", "type": "exterior" },
+    { "name": "LW Scrubs Grotto", "type": "grotto" },
+    { "name": "LW Goron City", "type": "exterior" },
+    { "name": "LW Zora's Domain", "type": "exterior" },
+    { "name": "LW Deku Theater", "type": "grotto" }
+  ] },
+  { "name": "Sacred Forest Meadow", "entrances": [
+    { "name": "SFM Lost Woods", "type": "exterior" },
+    { "name": "SFM Wolfos Grotto", "type": "grotto" },
+    { "name": "SFM Forest Temple", "type": "dungeon" }
+  ] },
+  { "name": "Link's House", "entrances": [
+    { "name": "LH Kokiri Forest", "type": "exterior" }
+  ] },
+  { "name": "Hyrule Field", "entrances": [
+    { "name": "HF Kokiri Forest", "type": "exterior" },
+    { "name": "HF Kakariko Village", "type": "exterior" },
+    { "name": "HF Castle Town", "type": "exterior" },
+    { "name": "HF Lake Hylia", "type": "exterior" },
+    { "name": "HF Gerudo Valley", "type": "exterior" },
+    { "name": "HF Lon Lon Ranch", "type": "exterior" },
+    { "name": "HF Open Grotto", "type": "grotto" },
+    { "name": "HF Near Castle Bomb Grotto", "type": "grotto" }
+  ] },
+  { "name": "Castle Town", "entrances": [
+    { "name": "CT Hyrule Field", "type": "exterior" },
+    { "name": "CT Temple of Time", "type": "interior" },
+    { "name": "CT Market", "type": "grotto" },
+    { "name": "CT Castle Grounds", "type": "exterior" }
+  ] },
+  { "name": "Temple of Time", "entrances": [
+    { "name": "TOT Castle Town", "type": "exterior" }
+  ] },
+  { "name": "Kakariko Village", "entrances": [
+    { "name": "KAK Hyrule Field", "type": "exterior" },
+    { "name": "KAK Graveyard", "type": "exterior" },
+    { "name": "KAK Death Mountain Trail", "type": "exterior" },
+    { "name": "KAK Open Grotto", "type": "grotto" }
+  ] },
+  { "name": "Graveyard", "entrances": [
+    { "name": "GRV Kakariko Village", "type": "exterior" },
+    { "name": "GRV Royal Family's Tomb", "type": "grotto" },
+    { "name": "GRV Dampe's Grave", "type": "grotto" }
+  ] },
+  { "name": "Death Mountain Trail", "entrances": [
+    { "name": "DMT Kakariko Village", "type": "exterior" },
+    { "name": "DMT Goron City", "type": "exterior" },
+    { "name": "DMT Death Mountain Crater", "type": "exterior" },
+    { "name": "DMT Cow Grotto", "type": "grotto" },
+    { "name": "DMT Storms Grotto", "type": "grotto" },
+    { "name": "DMT Great Fairy Fountain", "type": "interior" },
+    { "name": "DMT Owl Warp", "type": "warp" },
+    { "name": "DMT Dodongo's Cavern", "type": "dungeon" }
+  ] },
+  { "name": "Goron City", "entrances": [] },
+  { "name": "Death Mountain Crater", "entrances": [] },
+  { "name": "Zora's River", "entrances": [] },
+  { "name": "Zora's Domain", "entrances": [] },
+  { "name": "Zora's Fountain", "entrances": [] },
+  { "name": "Lake Hylia", "entrances": [] },
+  { "name": "Gerudo Valley", "entrances": [] },
+  { "name": "Gerudo Fortress", "entrances": [] },
+  { "name": "Haunted Wasteland", "entrances": [] },
+  { "name": "Desert Colossus", "entrances": [] },
+  { "name": "Inside the Deku Tree", "entrances": [] },
+  { "name": "Dodongo's Cavern", "entrances": [] },
+  { "name": "Inside Jabu-Jabu's Belly", "entrances": [] },
+  { "name": "Forest Temple", "entrances": [] },
+  { "name": "Fire Temple", "entrances": [] },
+  { "name": "Water Temple", "entrances": [] },
+  { "name": "Shadow Temple", "entrances": [] },
+  { "name": "Spirit Temple", "entrances": [] },
+  { "name": "Ganon's Castle", "entrances": [] },
+
+  { "name": "Clock Town", "entrances": [] },
+  { "name": "North Clock Town", "entrances": [] },
+  { "name": "South Clock Town", "entrances": [] },
+  { "name": "East Clock Town", "entrances": [] },
+  { "name": "West Clock Town", "entrances": [] },
+  { "name": "Termina Field", "entrances": [] },
+  { "name": "Milk Road", "entrances": [] },
+  { "name": "Romani Ranch", "entrances": [] },
+  { "name": "Southern Swamp", "entrances": [
+    { "name": "SW Termina Field", "type": "exterior" }
+  ] },
+  { "name": "Woods of Mystery", "entrances": [] },
+  { "name": "Woodfall", "entrances": [] },
+  { "name": "Woodfall Temple", "entrances": [] },
+  { "name": "Snowhead", "entrances": [] },
+  { "name": "Snowhead Temple", "entrances": [] },
+  { "name": "Mountain Village", "entrances": [] },
+  { "name": "Goron Village", "entrances": [] },
+  { "name": "Great Bay Coast", "entrances": [] },
+  { "name": "Pinnacle Rock", "entrances": [] },
+  { "name": "Zora Cape", "entrances": [] },
+  { "name": "Great Bay Temple", "entrances": [] },
+  { "name": "Ikana Canyon", "entrances": [] },
+  { "name": "Ikana Graveyard", "entrances": [] },
+  { "name": "Ancient Castle of Ikana", "entrances": [] },
+  { "name": "Stone Tower", "entrances": [] },
+  { "name": "Stone Tower Temple", "entrances": [] },
+  { "name": "Moon", "entrances": [] }
+]

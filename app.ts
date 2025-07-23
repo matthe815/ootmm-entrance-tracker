@@ -93,7 +93,7 @@ function handleList(): void {
         if (location.connections.length === 0) continue
 
         console.log(`${location.name}`)
-        console.log(` - ${location.connections.map((c: Entrance) => c.name).join("\n - ")}`)
+        console.log(` - ${location.connections.map((c: Entrance) => c.location.name).join("\n - ")}`)
     }
     CreateCommandLine()
 }

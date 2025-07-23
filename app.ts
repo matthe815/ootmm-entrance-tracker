@@ -21,8 +21,8 @@ function CreateCommandLine(): void {
     console.log('Type "help" to see available commands.');
     commandLine.prompt();
     commandLine.once('line', (line: string) => {
-        handleCommand(line);
         commandLine.close()
+        handleCommand(line);
     })
 }
 

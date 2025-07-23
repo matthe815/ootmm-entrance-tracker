@@ -68,7 +68,7 @@ function handleLink(): void {
     })
 }
 
-function handlePath() {
+function handlePath(): void {
     console.log('Enter the name of the area for which you want a route to.')
     ConsoleInput.GetAreaInput().then((input: LocationNode): void => {
         console.log('Choose the location to path from. Type \'spawn\' for Kokiri Forest')
@@ -87,6 +87,17 @@ function handlePath() {
     })
 }
 
+function handleList(): void {
+    let location: LocationNode
+    for (location of Locations.all) {
+        if (location.connections.length === 0) continue
+
+        console.log(`${location.name}`)
+        console.log(` - ${location.connections.map((c: Entrance) => c.name).join("\n - ")}`)
+    }
+    CreateCommandLine()
+}
+
 function handleCommand(line: string) {
     const command: string = line
     commandLine.close()
@@ -95,20 +106,24 @@ function handleCommand(line: string) {
         case 'help':
             console.log('(link) - Add a new connection between two entrances')
             console.log('(path) - View the route from one entrance to another')
+            console.log('(list) - List the current connections')
             CreateCommandLine()
             break
         case 'link':
             handleLink()
-            break;
+            break
         case 'path':
             handlePath()
-            break;
+            break
+        case 'list':
+            handleList()
+            break
         case 'exit':
         case 'quit':
             commandLine.close();
-            return;
+            return
         default:
-            console.log(`Unknown command: ${command}`);
+            console.log(`Unknown command: ${command}`)
             CreateCommandLine()
     }
 }

@@ -92,6 +92,10 @@ function handleCommand(line: string) {
     commandLine.close()
 
     switch (command.toLowerCase()) {
+        case 'help':
+            console.log('(link) - Add a new connection between two entrances')
+            console.log('(path) - View the route from one entrance to another')
+            break
         case 'link':
             handleLink()
             break;

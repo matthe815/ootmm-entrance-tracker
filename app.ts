@@ -95,6 +95,7 @@ function handleCommand(line: string) {
         case 'help':
             console.log('(link) - Add a new connection between two entrances')
             console.log('(path) - View the route from one entrance to another')
+            CreateCommandLine()
             break
         case 'link':
             handleLink()

@@ -36,7 +36,8 @@
     { "name": "CT Hyrule Field", "type": "exterior" },
     { "name": "CT Temple of Time", "type": "interior" },
     { "name": "CT Market", "type": "grotto" },
-    { "name": "CT Castle Grounds", "type": "exterior" }
+    { "name": "CT Castle Grounds", "type": "exterior" },
+    { "name": "CT Happy Mask Salesman", "type": "warp" }
   ] },
   { "name": "Temple of Time", "entrances": [
     { "name": "TOT Castle Town", "type": "exterior" }
@@ -82,12 +83,40 @@
   { "name": "Spirit Temple", "entrances": [] },
   { "name": "Ganon's Castle", "entrances": [] },
 
-  { "name": "Clock Town", "entrances": [] },
-  { "name": "North Clock Town", "entrances": [] },
-  { "name": "South Clock Town", "entrances": [] },
-  { "name": "East Clock Town", "entrances": [] },
-  { "name": "West Clock Town", "entrances": [] },
-  { "name": "Termina Field", "entrances": [] },
+  { "name": "South Clock Town", "entrances": [
+    { "name": "SCT Clock Tower", "type": "warp" },
+    { "name": "SCT West Clock Town - Near Laundry", "type": "exterior" },
+    { "name": "SCT West Clock Town - Near Owl Statue", "type": "exterior" },
+    { "name": "SCT East Clock Town - Near Clock Tower", "type": "exterior" },
+    { "name": "SCT East Clock Town - Near Termina Exit", "type": "exterior" },
+    { "name": "SCT North Clock Town", "type": "exterior" },
+    { "name": "SCT Termina Field", "type": "exterior" }
+  ] },
+  { "name": "North Clock Town", "entrances": [
+    { "name": "NCT Termina Field", "type": "exterior" },
+    { "name": "NCT Deku Scrub Minigame Grotto", "type": "grotto" },
+    { "name": "NCT East Clock Town", "type": "exterior" },
+    { "name": "NCT South Clock Town", "type": "exterior" },
+    { "name": "NCT Fairy Fountain", "type": "exterior" }
+  ] },
+  { "name": "East Clock Town", "entrances": [
+    { "name": "ECT South Clock Town - Near Treasure Minigame", "type": "exterior" },
+    { "name": "ECT South Clock Town - Near Hotel", "type": "exterior" },
+    { "name": "ECT North Clock Town", "type": "exterior" },
+    { "name": "ECT Bomber Hideout", "type": "exterior" },
+    { "name": "ECT Termina Field", "type": "exterior" }
+  ] },
+  { "name": "West Clock Town", "entrances": [
+    { "name": "WCT South Clock Town - Near Termina Exit", "type": "exterior" },
+    { "name": "WCT South Clock Town - Near Bank", "type": "exterior" },
+    { "name": "WCT Termina Field", "type": "exterior" }
+  ] },
+  { "name": "Termina Field", "entrances": [
+    { "name": "TF South Clock Town", "type": "exterior" },
+    { "name": "TF East Clock Town", "type": "exterior" },
+    { "name": "TF West Clock Town", "type": "exterior" },
+    { "name": "TF North Clock Town", "type": "exterior" }
+  ] },
   { "name": "Milk Road", "entrances": [] },
   { "name": "Romani Ranch", "entrances": [] },
   { "name": "Southern Swamp", "entrances": [

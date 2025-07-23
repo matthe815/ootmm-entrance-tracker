@@ -26,7 +26,7 @@ class ConsoleInput {
         return new Promise((resolve) => {
             if (!this.inputLine) return
 
-            this.inputLine.on("line", (input: string) => {
+            this.inputLine.on("line", (input: string): void => {
                 if (input.toLowerCase() === 'spawn') {
                     ConsoleInput.StopInput()
                     resolve(Locations.spawn)
@@ -47,10 +47,10 @@ class ConsoleInput {
 
     public static GetExitInput(area: LocationNode): Promise<MappedEntrance> {
         this.StartInput()
-        return new Promise((resolve) => {
+        return new Promise((resolve): void => {
             if (!this.inputLine) return
 
-            this.inputLine.on("line", (input: string) => {
+            this.inputLine.on("line", (input: string): void => {
                 const exitId: number = (parseInt(input) - 1)
                 const entrance: MappedEntrance | null = Locations.FindEntranceByIndex(area, exitId)
                 if (!entrance) {
@@ -66,10 +66,10 @@ class ConsoleInput {
 
     public static GetTextInput(): Promise<string> {
         this.StartInput()
-        return new Promise((resolve) => {
+        return new Promise((resolve): void => {
             if (!this.inputLine) return
 
-            this.inputLine.on("line", (input: string) => {
+            this.inputLine.on("line", (input: string): void => {
                 this.StopInput()
                 resolve(input)
             })

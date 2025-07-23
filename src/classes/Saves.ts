@@ -1,8 +1,11 @@
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
 import SerializedLocation from "../types/SerializedLocation";
 import LocationNode from "../types/LocationNode";
 import Locations from "./Locations";
 import Entrance from "../types/Entrance";
+
+const SAVE_LOCATION = path.resolve("saves", "save.json")
 
 class Saves {
     public static Serialize(): SerializedLocation[] {
@@ -34,13 +37,13 @@ class Saves {
 
     public static Save(): void {
         const save: SerializedLocation[] = Saves.Serialize()
-        fs.writeFileSync("save.json", JSON.stringify(save))
+        fs.writeFileSync(SAVE_LOCATION, JSON.stringify(save))
         console.log('Tracker progress saved successfully.')
     }
 
     public static Load(): void {
-        if (!fs.existsSync("save.json")) Locations.LoadDefault()
-        else Saves.Deserialize(JSON.parse(String(fs.readFileSync("save.json"))))
+        if (!fs.existsSync(SAVE_LOCATION)) Locations.LoadDefault()
+        else Saves.Deserialize(JSON.parse(String(fs.readFileSync(SAVE_LOCATION))))
 
         Locations.spawn = Locations.all[0]
     }

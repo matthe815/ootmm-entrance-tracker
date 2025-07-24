@@ -13,7 +13,7 @@ class Locations {
     }
 
     public static Find(name: string): LocationNode | null {
-        return this.all.find((location: LocationNode): boolean => location.name.toLowerCase() === name.toLowerCase() || location.name.startsWith(name)) ?? null
+        return this.all.find((location: LocationNode): boolean => location.name.toLowerCase() === name.toLowerCase()) ?? null
     }
 
     public static FindStrict(name: string): LocationNode | null {

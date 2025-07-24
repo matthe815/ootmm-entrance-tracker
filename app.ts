@@ -28,27 +28,40 @@ function CreateCommandLine(): void {
     })
 }
 
-function FindPathToTarget(current: LocationNode, target: LocationNode, visited: Set<LocationNode> = new Set<LocationNode>(), path: PathStep[] = []): PathStep[] | null {
-    if (visited.has(current)) return null;
+function FindPathToTarget(start: LocationNode, target: LocationNode): PathStep[] | null {
+    const queue: { node: LocationNode; path: PathStep[] }[] = [];
+    const visited = new Set<LocationNode>();
 
-    visited.add(current);
-    path.push({ location: current });
+    // Start with initial node
+    queue.push({node: start, path: [{location: start}]});
 
-    if (current === target) {
-        return [...path];
+    while (queue.length > 0) {
+        const {node, path} = queue.shift()!;
+        if (visited.has(node)) continue;
+
+        visited.add(node);
+
+        if (node === target) {
+            return path;
+        }
+
+        for (const entrance of node.connections) {
+            const mapped = Locations.FindEntrance(node, entrance.name);
+            if (!mapped || mapped.type === "none") continue;
+
+            const nextPath: PathStep[] = [...path];
+            
+            nextPath[nextPath.length - 1] = {
+                ...nextPath[nextPath.length - 1],
+                via: entrance.name
+            };
+
+            // ➕ Push the new step (arriving at this new node)
+            nextPath.push({ location: entrance.location });
+
+            queue.push({ node: entrance.location, path: nextPath });
+        }
     }
-
-    let entrance: Entrance
-    for (entrance of current.connections) {
-        const mapped: MappedEntrance | null = Locations.FindEntrance(current, entrance.name)
-        if (!mapped || mapped.type == EntranceType.None) continue
-
-        path[path.length - 1].via = entrance.name;
-        const result = FindPathToTarget(entrance.location, target, visited, path);
-        if (result) return result;
-    }
-
-    path.pop();
     return null;
 }
 

@@ -29,6 +29,7 @@
     { "name": "HF Lake Hylia", "type": "exterior" },
     { "name": "HF Gerudo Valley", "type": "exterior" },
     { "name": "HF Lon Lon Ranch", "type": "exterior" },
+    { "name": "HF Zora River", "type": "exterior" },
     { "name": "HF Open Grotto", "type": "grotto" },
     { "name": "HF Near Castle Bomb Grotto", "type": "grotto" }
   ] },
@@ -63,11 +64,29 @@
     { "name": "DMT Owl Warp", "type": "warp" },
     { "name": "DMT Dodongo's Cavern", "type": "dungeon" }
   ] },
-  { "name": "Goron City", "entrances": [] },
-  { "name": "Death Mountain Crater", "entrances": [] },
-  { "name": "Zora's River", "entrances": [] },
-  { "name": "Zora's Domain", "entrances": [] },
-  { "name": "Zora's Fountain", "entrances": [] },
+  { "name": "Goron City", "entrances": [
+    { "name": "GC Kokiri Forest", "type": "exterior" },
+    { "name": "GC Death Mountain Trail", "type": "exterior" },
+    { "name": "GC Death Mountain Crater", "type": "exterior" },
+    { "name": "GC Song of Time Grotto", "type": "grotto" }
+  ] },
+  { "name": "Death Mountain Crater", "entrances": [
+    { "name": "DMC Goron City", "type": "exterior" },
+    { "name": "DMC Fairy Fountain", "type": "exterior" },
+    { "name": "DMC Fire Temple", "type": "exterior" },
+    { "name": "DMC Goron City", "type": "exterior" }
+  ] },
+  { "name": "Zora's River", "entrances": [
+    { "name": "ZR Hyrule Field", "type": "exterior" },
+    { "name": "ZR Kokiri Forest Shortcut", "type": "exterior" },
+    { "name": "ZR Zora's Domain", "type": "exterior" }
+  ] },
+  { "name": "Zora's Domain", "entrances": [
+
+  ] },
+  { "name": "Zora's Fountain", "entrances": [
+
+  ] },
   { "name": "Lake Hylia", "entrances": [] },
   { "name": "Gerudo Valley", "entrances": [] },
   { "name": "Gerudo Fortress", "entrances": [] },
@@ -115,17 +134,43 @@
     { "name": "TF South Clock Town", "type": "exterior" },
     { "name": "TF East Clock Town", "type": "exterior" },
     { "name": "TF West Clock Town", "type": "exterior" },
-    { "name": "TF North Clock Town", "type": "exterior" }
+    { "name": "TF North Clock Town", "type": "exterior" },
+    { "name": "TF Southern Swamp", "type": "exterior" },
+    { "name": "TF Ikana Canyon Grotto", "type": "grotto" },
+    { "name": "TF Ikana Canyon", "type": "exterior" },
+    { "name": "TF Milk Road", "type": "exterior" },
+    { "name": "TF Ikana Canyon", "type": "exterior" },
+    { "name": "TF Snowhead", "type": "exterior" },
+    { "name": "TF Great Bay Coast", "type": "exterior" },
+    { "name": "TF Near Southern Swamp Grotto", "type": "grotto" },
+    { "name": "TF Near Milk Road Grotto", "type": "grotto" },
+    { "name": "TF Near Snowhead Grotto", "type": "grotto" },
+    { "name": "TF Dodongo Grotto", "type": "grotto" },
+    { "name": "TF North Clock Town Sheikah Grotto", "type": "grotto" },
+    { "name": "TF East Clock Town Sheikah Grotto", "type": "grotto" },
+    { "name": "TF West Clock Town Sheikah Grotto", "type": "grotto" },
+    { "name": "TF South Clock Town Sheikah Grotto", "type": "grotto" }
   ] },
-  { "name": "Milk Road", "entrances": [] },
-  { "name": "Romani Ranch", "entrances": [] },
+  { "name": "Milk Road", "entrances": [
+    { "name": "MR Romani Ranch", "type": "exterior" },
+    { "name": "MR Horse Race", "type": "grotto" }
+  ] },
+  { "name": "Romani Ranch", "entrances": [
+    { "name": "RR Milk Road", "type": "exterior" }
+  ] },
   { "name": "Southern Swamp", "entrances": [
     { "name": "SW Termina Field", "type": "exterior" }
   ] },
   { "name": "Woods of Mystery", "entrances": [] },
-  { "name": "Woodfall", "entrances": [] },
-  { "name": "Woodfall Temple", "entrances": [] },
-  { "name": "Snowhead", "entrances": [] },
+  { "name": "Woodfall", "entrances": [
+    { "name": "WF Woodfall Temple", "type": "dungeon" }
+  ] },
+  { "name": "Woodfall Temple", "entrances": [
+    { "name": "WFT Woodfall", "type": "exterior" }
+  ] },
+  { "name": "Snowhead", "entrances": [
+    { "name": "SH Termina Field", "type": "exterior" }
+  ] },
   { "name": "Snowhead Temple", "entrances": [] },
   { "name": "Mountain Village", "entrances": [] },
   { "name": "Goron Village", "entrances": [] },

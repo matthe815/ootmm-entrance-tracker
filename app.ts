@@ -7,6 +7,7 @@ import {MappedEntrance} from "./src/types/LocationMapping";
 import EntranceLinks from "./src/classes/EntranceLinks";
 import Saves from "./src/classes/Saves";
 import ConsoleInput from "./src/classes/ConsoleInput";
+import {ConnectToServer, UpdateAll} from "./utils/NetUtils";
 
 const readline = require('readline');
 let commandLine: Interface
@@ -117,6 +118,14 @@ function handleCommand(line: string) {
             break
         case 'list':
             handleList()
+            break
+        case 'connect':
+            ConnectToServer()
+            CreateCommandLine()
+            break
+        case 'update':
+            UpdateAll()
+            CreateCommandLine()
             break
         case 'exit':
         case 'quit':

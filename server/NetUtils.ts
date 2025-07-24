@@ -8,6 +8,38 @@ function readString(buf: Buffer, offset: number) {
     return { str, bytesUsed: 1 + length };
 }
 
+class NetSerializer {
+    public static WriteLocation(location: any): unknown[] {
+        const chunks: any[] = []
+        const entrances: any[] = location.entrances
+
+        chunks.push(stringToBuffer(location.name))
+        chunks.push(Uint8Array.from([entrances.length]))
+
+        let entrance: { name: string, location: string }
+        for (entrance of entrances) {
+            chunks.push(stringToBuffer(entrance.name))
+            chunks.push(stringToBuffer(entrance.location))
+        }
+
+        return chunks
+    }
+
+    public static WriteChunksToBuffer(op: number, chunks: any[]): Uint8Array<ArrayBuffer> {
+        const totalLength = chunks.reduce((sum, arr) => sum + arr.length, 0) + 1
+        const buffer: Uint8Array<ArrayBuffer> = new Uint8Array(totalLength)
+
+        let offset: number = 1
+        for (const chunk of chunks) {
+            buffer.set(chunk, offset)
+            offset += chunk.length
+        }
+
+        buffer.set(Uint8Array.from([op]), 0)
+        return buffer
+    }
+}
+
 export function deserializeLocation(buffer: Buffer) {
     let offset = 0;
     const { str: locationName, bytesUsed: locBytes } = readString(buffer, offset);
@@ -42,37 +74,24 @@ function stringToBuffer(str: string) {
     return Uint8Array.from([bytes.length, ...bytes]);
 }
 
-function serializeLocationArray(locations: any[]) {
-    const chunks = [];
+export function SerializeLocationArray(locations: any): Uint8Array<ArrayBuffer> {
+    const chunks: any[] = [];
 
-    for (const loc of locations) {
-        const locChunks = [];
+    let location: any
+    for (location of locations) {
+        const serialized: unknown[] = NetSerializer.WriteLocation({
+            name: location.name,
+            entrances: location.entrances.map((c: any) => ({ location: c.location, name: c.name }))
+        })
+        serialized.push(Uint8Array.from([0x00]))
 
-        locChunks.push(stringToBuffer(loc.name)); // Location name
-        locChunks.push(Uint8Array.from([loc.entrances.length])); // Number of entrances
-
-        for (const ent of loc.entrances) {
-            locChunks.push(stringToBuffer(ent.name));     // Entrance name
-            locChunks.push(stringToBuffer(ent.location)); // Entrance location
-        }
-
-        locChunks.push(Uint8Array.from([0x00]));
-        chunks.push(...locChunks);
+        chunks.push(...serialized)
     }
 
-    // Concatenate all chunks into a single buffer
-    const totalLength = chunks.reduce((sum, arr) => sum + arr.length, 0);
-    const buffer = new Uint8Array(totalLength);
-    let offset = 0;
-    for (const chunk of chunks) {
-        buffer.set(chunk, offset);
-        offset += chunk.length;
-    }
-
-    return buffer;
+    return NetSerializer.WriteChunksToBuffer(0x01, chunks)
 }
 
 export function UpdateAll(socket: Socket): void {
-    const buffer = Buffer.from(serializeLocationArray(serverSave))
+    const buffer = Buffer.from(SerializeLocationArray(serverSave))
     socket.write(buffer)
 }

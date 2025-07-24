@@ -22,23 +22,37 @@ export function ConnectToServer() {
     })
     let dataBuffer = Buffer.alloc(0);
     serverConnection.on("data", (chunk): void => {
-        console.log('Got data')
-        dataBuffer = Buffer.concat([dataBuffer, chunk]);
-        const newLocations = []
+        const op: number = chunk[0]
+        dataBuffer = Buffer.concat([dataBuffer, chunk]).subarray(1);
 
-        let splitIndex;
-        while ((splitIndex = dataBuffer.indexOf(0x00)) !== -1) {
-            const chunk = dataBuffer.slice(0, splitIndex);
-            dataBuffer = dataBuffer.slice(splitIndex + 1);
+        switch (op) {
+            case 1:
+                let splitIndex: number = 1;
+                while ((splitIndex = dataBuffer.indexOf(0x00)) !== -1) {
+                    const chunk = dataBuffer.slice(0, splitIndex);
+                    dataBuffer = dataBuffer.slice(splitIndex + 1);
 
-            if (chunk.length === 0) continue
+                    if (chunk.length === 0) continue
 
-            try {
-                const { location } = deserializeLocation(chunk);
-                newLocations.push(location);
-            } catch (err) {
-                console.error('Failed to parse location:', err);
-            }
+                    try {
+                        const { location } = deserializeLocation(chunk);
+
+                        let savedLoc: LocationNode | undefined
+                        if ((savedLoc = Locations.all.find((l: LocationNode): boolean => l.name === location.name))) {
+                            let entrance: Entrance
+                            for (entrance of location.entrances) {
+                                if (savedLoc.connections.find((e: Entrance): boolean => e.name === entrance.name)) {
+                                    continue
+                                }
+                                savedLoc.connections.push(entrance)
+                                console.log(`🆕 Stored new entrance: ${location.name} (${entrance.name})`);
+                            }
+                        }
+                    } catch (err) {
+                        console.error('Failed to parse location:', err);
+                    }
+                }
+                break
         }
     })
 }

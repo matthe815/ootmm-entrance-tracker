@@ -107,6 +107,7 @@ function handleConnect(): void {
 
         console.log(`Server host set to ${getHost()}:13234.`)
         ConnectToServer()
+        CreateCommandLine()
     })
 }
 
@@ -132,7 +133,6 @@ function handleCommand(line: string) {
             break
         case 'connect':
             handleConnect()
-            CreateCommandLine()
             break
         case 'update':
             UpdateAll()

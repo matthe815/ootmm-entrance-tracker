@@ -182,7 +182,12 @@
   { "name": "Romani Ranch", "entrances": [
     { "name": "RR Milk Road", "type": "exterior" }
   ] },
-  { "name": "Southern Swamp Connector", "entrances": [] },
+  { "name": "Southern Swamp Connector", "entrances": [
+    { "name": "SWC Termina Field", "type": "exterior" },
+    { "name": "SWC Southern Swamp", "type": "exterior" },
+    { "name": "SWC Archery Game", "type": "interior" },
+    { "name": "SWC Chest Grotto", "type": "grotto" }
+  ] },
   { "name": "Southern Swamp", "entrances": [
     { "name": "SW Termina Field", "type": "exterior" }
   ] },
@@ -198,8 +203,12 @@
   ] },
   { "name": "Snowhead Temple", "entrances": [] },
   { "name": "Mountain Village", "entrances": [] },
-  { "name": "Swamp Spider House", "entrances": [] },
-  { "name": "Ocean Spider House", "entrances": [] },
+  { "name": "Swamp Spider House", "entrances": [
+    { "name": "SSH Southern Swamp", "type": "exterior" }
+  ] },
+  { "name": "Ocean Spider House", "entrances": [
+    { "name": "OSH Great Bay Coast", "type": "exterior" }
+  ] },
   { "name": "Goron Village", "entrances": [] },
   { "name": "Great Bay Coast", "entrances": [
     { "name": "GBC Termina Field", "type": "exterior" },

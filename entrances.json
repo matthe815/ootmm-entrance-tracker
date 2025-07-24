@@ -31,6 +31,8 @@
     { "name": "HF Lon Lon Ranch", "type": "exterior" },
     { "name": "HF Zora River", "type": "exterior" },
     { "name": "HF Open Grotto", "type": "grotto" },
+    { "name": "HF SW Grotto", "type": "grotto" },
+    { "name": "HF SE Grotto", "type": "grotto" },
     { "name": "HF Near Castle Bomb Grotto", "type": "grotto" }
   ] },
   { "name": "Castle Town", "entrances": [
@@ -92,7 +94,9 @@
   { "name": "Gerudo Fortress", "entrances": [] },
   { "name": "Haunted Wasteland", "entrances": [] },
   { "name": "Desert Colossus", "entrances": [] },
-  { "name": "Inside the Deku Tree", "entrances": [] },
+  { "name": "Inside the Deku Tree", "entrances": [
+    { "name": "DT Kokiri Forest", "type": "exterior" }
+  ] },
   { "name": "Dodongo's Cavern", "entrances": [] },
   { "name": "Inside Jabu-Jabu's Belly", "entrances": [] },
   { "name": "Forest Temple", "entrances": [] },

@@ -3,7 +3,7 @@ import Locations from "./src/classes/Locations";
 import LocationNode from "./src/types/LocationNode";
 import Entrance from "./src/types/Entrance";
 import PathStep from "./src/types/PathStep";
-import {MappedEntrance} from "./src/types/LocationMapping";
+import {EntranceType, MappedEntrance} from "./src/types/LocationMapping";
 import EntranceLinks from "./src/classes/EntranceLinks";
 import Saves from "./src/classes/Saves";
 import ConsoleInput from "./src/classes/ConsoleInput";
@@ -40,6 +40,9 @@ function FindPathToTarget(current: LocationNode, target: LocationNode, visited: 
 
     let entrance: Entrance
     for (entrance of current.connections) {
+        const mapped: MappedEntrance | null = Locations.FindEntrance(current, entrance.name)
+        if (!mapped || mapped.type == EntranceType.None) continue
+
         path[path.length - 1].via = entrance.name;
         const result = FindPathToTarget(entrance.location, target, visited, path);
         if (result) return result;

@@ -2,7 +2,8 @@ export enum EntranceType {
     Exterior = "exterior",
     Dungeon = "dungeon",
     Grotto = "grotto",
-    Warp = "warp"
+    Warp = "warp",
+    None = "none"
 }
 
 export type MappedEntrance = {

@@ -232,7 +232,15 @@
     { "name": "IC Termina Field", "type": "exterior" }
   ] },
   { "name": "Ancient Castle of Ikana", "entrances": [] },
-  { "name": "Stone Tower", "entrances": [] },
-  { "name": "Stone Tower Temple", "entrances": [] },
+  { "name": "Stone Tower", "entrances": [
+    { "name": "ST Stone Tower Temple", "type": "exterior" },
+    { "name": "ST Inverted Stone Tower Temple", "type": "exterior" }
+  ] },
+  { "name": "Stone Tower Temple", "entrances": [
+    { "name": "STT Stone Tower", "type": "exterior" }
+  ] },
+  { "name": "Inverted Stone Tower Temple", "entrances": [
+    { "name": "ISTT Stone Tower", "type": "exterior" }
+  ] },
   { "name": "Moon", "entrances": [] }
 ]

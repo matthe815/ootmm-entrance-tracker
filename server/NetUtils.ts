@@ -1,6 +1,5 @@
 import {Socket} from "net";
 import {serverSave} from "./app";
-import path from "node:path";
 
 function readString(buf: Buffer, offset: number) {
     const length: number = buf[offset];
@@ -74,6 +73,6 @@ function serializeLocationArray(locations: any[]) {
 }
 
 export function UpdateAll(socket: Socket): void {
-    const buffer = new Buffer(serializeLocationArray(serverSave))
+    const buffer = Buffer.from(serializeLocationArray(serverSave))
     socket.write(buffer)
 }

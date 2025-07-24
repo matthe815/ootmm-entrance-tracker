@@ -1,10 +1,13 @@
 import Entrance from "../types/Entrance";
 import Saves from "./Saves";
+import {UpdateGroup} from "../../utils/NetUtils";
 
 class EntranceLinks {
     public static Add(entrance: Entrance, exit: Entrance) {
         entrance.location.connections.push(exit)
         exit.location.connections.push(entrance)
+
+        UpdateGroup([ entrance.location, exit.location ])
 
         console.log(`Linked ${exit.location.name} to ${entrance.location.name}`)
         Saves.Save()

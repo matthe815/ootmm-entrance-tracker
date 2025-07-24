@@ -174,7 +174,14 @@
   { "name": "Snowhead Temple", "entrances": [] },
   { "name": "Mountain Village", "entrances": [] },
   { "name": "Goron Village", "entrances": [] },
-  { "name": "Great Bay Coast", "entrances": [] },
+  { "name": "Great Bay Coast", "entrances": [
+    { "name": "GBC Termina Field", "type": "exterior" },
+    { "name": "GBC Sub Area", "type": "exterior" },
+    { "name": "GBC Gerudo Fortress", "type": "exterior" },
+    { "name": "GBC Aquarium", "type": "interior" },
+    { "name": "GBC Skulltula House", "type": "exterior" },
+    { "name": "GBC Fishermans' House", "type": "exterior" }
+  ] },
   { "name": "Pinnacle Rock", "entrances": [] },
   { "name": "Zora Cape", "entrances": [] },
   { "name": "Great Bay Temple", "entrances": [] },

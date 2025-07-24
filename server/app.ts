@@ -8,30 +8,47 @@ export let serverSave: any[] = []
 const server: Server = net.createServer((socket: Socket) => {
     let dataBuffer = Buffer.alloc(0);
     socket.on('data', (chunk) => {
-        dataBuffer = Buffer.concat([dataBuffer, chunk]);
+        const op: number = chunk[0]
+        dataBuffer = Buffer.concat([dataBuffer, chunk]).subarray(1);
 
-        let splitIndex;
-        while ((splitIndex = dataBuffer.indexOf(0x00)) !== -1) {
-            const chunk = dataBuffer.slice(0, splitIndex);
-            dataBuffer = dataBuffer.slice(splitIndex + 1);
+        switch (op) {
+            case 1:
+                let splitIndex: number = 1;
+                while ((splitIndex = dataBuffer.indexOf(0x00)) !== -1) {
+                    const chunk = dataBuffer.slice(0, splitIndex);
+                    dataBuffer = dataBuffer.slice(splitIndex + 1);
 
-            if (chunk.length === 0) continue
+                    if (chunk.length === 0) continue
 
-            try {
-                const { location } = deserializeLocation(chunk);
-                if (serverSave.find(l => l.name === location.name)) {
-                    console.log(`🔁 Ignored duplicate location: ${location.name}`);
-                    continue;
+                    try {
+                        const { location } = deserializeLocation(chunk);
+
+                        let savedLoc: { name: string, entrances: { name: string, location: string }[] }
+                        if ((savedLoc = serverSave.find(l => l.name === location.name))) {
+                            let entrance: { name: string, location: string }
+                            for (entrance of location.entrances) {
+                                if (savedLoc.entrances.find((e: { location: string, name: string }): boolean => e.name === entrance.name)) {
+                                    console.log(`🔁 Ignored duplicate entrance: ${location.name} (${entrance.name})`);
+                                    continue
+                                }
+                                savedLoc.entrances.push(entrance)
+                                console.log(`🆕 Stored new entrance: ${location.name} (${entrance.name})`);
+                            }
+                            console.log(`🔁 Ignored duplicate location: ${location.name}`);
+                            continue;
+                        }
+
+                        serverSave.push(location);
+                        console.log(`🆕 Stored new location: ${location.name}`);
+                    } catch (err) {
+                        console.error('Failed to parse location:', err);
+                    }
                 }
 
-                serverSave.push(location);
-                console.log(`🆕 Stored new location: ${location.name}`);
-            } catch (err) {
-                console.error('Failed to parse location:', err);
-            }
+                console.log("Sending update back to client")
+                break
         }
 
-        console.log("Sending update back to client")
         writeFileSync(path.resolve("save.json"), JSON.stringify(serverSave))
         UpdateAll(socket)
     });

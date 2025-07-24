@@ -1,10 +1,6 @@
-import { connect } from "node:net"
 import {Socket} from "net";
 import {serverSave} from "./app";
-
-function SendEntrance() {
-
-}
+import path from "node:path";
 
 function readString(buf: Buffer, offset: number) {
     const length: number = buf[offset];

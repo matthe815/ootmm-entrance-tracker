@@ -1,7 +1,9 @@
 import {Server, Socket} from "net";
 import {deserializeLocation, UpdateAll} from "./NetUtils";
+import {existsSync, readFileSync, writeFileSync} from "fs";
+import path from "node:path";
 const net = require('net');
-export const serverSave: any[] = []
+export let serverSave: any[] = []
 
 const server: Server = net.createServer((socket: Socket) => {
     let dataBuffer = Buffer.alloc(0);
@@ -17,7 +19,6 @@ const server: Server = net.createServer((socket: Socket) => {
 
             try {
                 const { location } = deserializeLocation(chunk);
-                console.log(location)
                 if (serverSave.find(l => l.name === location.name)) {
                     console.log(`🔁 Ignored duplicate location: ${location.name}`);
                     continue;
@@ -31,6 +32,7 @@ const server: Server = net.createServer((socket: Socket) => {
         }
 
         console.log("Sending update back to client")
+        writeFileSync(path.resolve("save.json"), JSON.stringify(serverSave))
         UpdateAll(socket)
     });
 
@@ -44,6 +46,7 @@ const server: Server = net.createServer((socket: Socket) => {
 });
 
 const PORT = 13234;
+if (existsSync(path.resolve("save.json"))) serverSave = JSON.parse(String(readFileSync(path.resolve("save.json"))))
 server.listen(PORT, () => {
     console.log(`TCP server listening on port ${PORT}`);
 });

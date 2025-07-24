@@ -28,8 +28,6 @@ export function ConnectToServer() {
                 console.error('Failed to parse location:', err);
             }
         }
-
-        console.log(Locations.all)
     })
 }
 
@@ -109,6 +107,6 @@ function serializeLocationArray(locations: LocationNode[]) {
 
 export function UpdateAll(): void {
     if (!serverConnection) return
-    const buffer = new Buffer(serializeLocationArray(Locations.all))
+    const buffer = Buffer.from(serializeLocationArray(Locations.all))
     serverConnection.write(buffer)
 }

@@ -6,8 +6,18 @@ import SerializedLocation from "../src/types/SerializedLocation";
 import Entrance from "../src/types/Entrance";
 let serverConnection: Socket
 
+let SERVER_HOST: string = 'localhost'
+
+export function setHost(host: string): void {
+    SERVER_HOST = host
+}
+
+export function getHost(): string {
+    return SERVER_HOST
+}
+
 export function ConnectToServer() {
-    serverConnection = connect(13234, "localhost", () => {
+    serverConnection = connect(13234, getHost(), () => {
         console.log("Successfully connected to sync server.")
     })
     let dataBuffer = Buffer.alloc(0);

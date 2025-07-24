@@ -7,7 +7,7 @@ import {MappedEntrance} from "./src/types/LocationMapping";
 import EntranceLinks from "./src/classes/EntranceLinks";
 import Saves from "./src/classes/Saves";
 import ConsoleInput from "./src/classes/ConsoleInput";
-import {ConnectToServer, UpdateAll} from "./utils/NetUtils";
+import {ConnectToServer, getHost, setHost, UpdateAll} from "./utils/NetUtils";
 
 const readline = require('readline');
 let commandLine: Interface
@@ -99,6 +99,17 @@ function handleList(): void {
     CreateCommandLine()
 }
 
+function handleConnect(): void {
+    console.log('Input the IP address to connect to. Type nothing for localhost')
+    ConsoleInput.GetTextInput().then((input: string): void => {
+        if (input == '') setHost('localhost')
+        else setHost(input)
+
+        console.log(`Server host set to ${getHost()}:13234.`)
+        ConnectToServer()
+    })
+}
+
 function handleCommand(line: string) {
     const command: string = line
     commandLine.close()
@@ -120,7 +131,7 @@ function handleCommand(line: string) {
             handleList()
             break
         case 'connect':
-            ConnectToServer()
+            handleConnect()
             CreateCommandLine()
             break
         case 'update':

@@ -8,6 +8,7 @@ import EntranceLinks from "./src/classes/EntranceLinks";
 import Saves from "./src/classes/Saves";
 import ConsoleInput from "./src/classes/ConsoleInput";
 import {ConnectToServer, getHost, setHost, UpdateAll} from "./utils/NetUtils";
+import fs from "fs";
 
 const readline = require('readline');
 let commandLine: Interface
@@ -136,6 +137,11 @@ function handleCommand(line: string) {
             break
         case 'update':
             UpdateAll()
+            CreateCommandLine()
+            break
+        case 'refresh':
+            console.log('Entrance file has been refreshed.')
+            Locations.entrances = JSON.parse(String(fs.readFileSync("entrances.json")))
             CreateCommandLine()
             break
         case 'exit':

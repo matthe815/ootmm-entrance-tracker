@@ -2,7 +2,6 @@ import LocationNode from "../types/LocationNode";
 import {MappedEntrance, MappedLocation} from "../types/LocationMapping";
 import fs from "fs";
 import Entrance from "../types/Entrance";
-import locationNode from "../types/LocationNode";
 
 class Locations {
     public static all: LocationNode[]

@@ -164,6 +164,7 @@
     { "name": "TF Ikana Canyon", "type": "exterior" },
     { "name": "TF Milk Road", "type": "exterior" },
     { "name": "TF Ikana Canyon", "type": "exterior" },
+    { "name": "TF Ikana Graveyard", "type": "exterior" },
     { "name": "TF Snowhead", "type": "exterior" },
     { "name": "TF Great Bay Coast", "type": "exterior" },
     { "name": "TF Near Southern Swamp Grotto", "type": "grotto" },
@@ -176,6 +177,7 @@
     { "name": "TF South Clock Town Sheikah Grotto", "type": "grotto" }
   ] },
   { "name": "Milk Road", "entrances": [
+    { "name": "MR Termina Field", "type": "exterior" },
     { "name": "MR Romani Ranch", "type": "exterior" },
     { "name": "MR Horse Race", "type": "grotto" }
   ] },
@@ -221,8 +223,15 @@
   { "name": "Pinnacle Rock", "entrances": [] },
   { "name": "Zora Cape", "entrances": [] },
   { "name": "Great Bay Temple", "entrances": [] },
-  { "name": "Ikana Canyon", "entrances": [] },
-  { "name": "Ikana Graveyard", "entrances": [] },
+  { "name": "Ikana Canyon", "entrances": [
+    { "name": "IC Termina Field", "type": "exterior" },
+    { "name": "IC Ancient Castle of Ikana", "type": "exterior" },
+    { "name": "IC Stone Tower", "type": "exterior" },
+    { "name": "IC Stone Tower Temple", "type": "exterior" }
+  ] },
+  { "name": "Ikana Graveyard", "entrances": [
+    { "name": "IC Termina Field", "type": "exterior" }
+  ] },
   { "name": "Ancient Castle of Ikana", "entrances": [] },
   { "name": "Stone Tower", "entrances": [] },
   { "name": "Stone Tower Temple", "entrances": [] },

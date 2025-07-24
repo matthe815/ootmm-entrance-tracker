@@ -50,7 +50,7 @@ function FindPathToTarget(start: LocationNode, target: LocationNode): PathStep[]
             if (!mapped || mapped.type === "none") continue;
 
             const nextPath: PathStep[] = [...path];
-            
+
             nextPath[nextPath.length - 1] = {
                 ...nextPath[nextPath.length - 1],
                 via: entrance.name

@@ -85,6 +85,7 @@ dist
 .idea/*
 
 saves/
+server/save.json
 
 # Gatsby files
 .cache/

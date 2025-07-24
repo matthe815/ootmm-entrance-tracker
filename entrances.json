@@ -84,18 +84,38 @@
     { "name": "ZR Zora's Domain", "type": "exterior" }
   ] },
   { "name": "Zora's Domain", "entrances": [
-
+    { "name": "ZD Zora's River", "type": "exterior" },
+    { "name": "ZD Zora's Fountain", "type": "exterior" },
+    { "name": "ZD Lake Hylia", "type": "exterior" }
   ] },
   { "name": "Zora's Fountain", "entrances": [
-
+    { "name": "ZF Fairys' Fountain", "type": "exterior" },
+    { "name": "ZD Zora's Domain", "type": "exterior" },
+    { "name": "ZD Ice Cavern", "type": "dungeon" },
+    { "name": "ZD Jabu Jabu", "type": "dungeon" }
   ] },
-  { "name": "Lake Hylia", "entrances": [] },
-  { "name": "Gerudo Valley", "entrances": [] },
-  { "name": "Gerudo Fortress", "entrances": [] },
+  { "name": "Lake Hylia", "entrances": [
+    { "name": "LH Hyrule Field", "type": "exterior" },
+    { "name": "LH Zoras' Domain", "type": "exterior" },
+    { "name": "LH Water Temple", "type": "dungeon" },
+    { "name": "LH From Gerudo Valley", "type": "none" },
+    { "name": "LH Owl", "type": "warp" },
+    { "name": "LH Business Scrub Grotto", "type": "grotto" }
+  ] },
+  { "name": "Gerudo Valley", "entrances": [
+    { "name": "GV Lake Hylia", "type": "warp" },
+    { "name": "GV Gerudo Fortress", "type": "exterior" },
+    { "name": "GV Hyrule Field", "type": "exterior" }
+  ] },
+  { "name": "Gerudo Fortress", "entrances": [
+    { "name": "GF Gerudo Training Ground", "type": "dungeon" },
+    { "name": "GV Haunted Wastelands", "type": "exterior" }
+  ] },
   { "name": "Haunted Wasteland", "entrances": [] },
   { "name": "Desert Colossus", "entrances": [] },
   { "name": "Inside the Deku Tree", "entrances": [
-    { "name": "DT Kokiri Forest", "type": "exterior" }
+    { "name": "DT Kokiri Forest", "type": "exterior" },
+    { "name": "DT Gohma", "type": "boss" }
   ] },
   { "name": "Dodongo's Cavern", "entrances": [] },
   { "name": "Inside Jabu-Jabu's Belly", "entrances": [] },

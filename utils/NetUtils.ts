@@ -78,11 +78,10 @@ export function DisconnectFromServer(): void {
 }
 
 export function ConnectToServer(host: string): Promise<void> {
-    AddConnectionHistory(host)
-
     return new Promise((resolve, reject): void => {
         serverConnection = connect(13234, host, (): void  => {
             console.log("Successfully connected to sync server.")
+            AddConnectionHistory(host)
             serverConnection.on("data", HandleServerPacket)
             resolve()
         }).on('error', reject)

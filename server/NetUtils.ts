@@ -1,5 +1,7 @@
 import {Socket} from "net";
 import {serverSave} from "./app";
+import {clearInterval} from "timers";
+import LocationNode from "../src/types/LocationNode";
 
 function readString(buf: Buffer, offset: number) {
     const length: number = buf[offset];
@@ -91,7 +93,37 @@ export function SerializeLocationArray(locations: any): Uint8Array {
     return NetSerializer.WriteChunksToBuffer(0x01, chunks)
 }
 
-export function UpdateAll(socket: Socket): void {
-    const buffer = Buffer.from(SerializeLocationArray(serverSave))
+export function UpdateGroup(nodes: LocationNode[], socket: Socket): void {
+    const buffer: Uint8Array = Buffer.from(SerializeLocationArray(nodes))
     socket.write(buffer)
+}
+
+function ProcessSendQueue(queue: any[][], socket: Socket) {
+    let interval: NodeJS.Timeout
+    queue = queue.reverse()
+    interval = setInterval(() => {
+        if (queue.length === 0) clearInterval(interval)
+
+        let packet = queue.pop()
+        if (!packet) return
+
+        UpdateGroup(packet, socket)
+    }, 1000)
+}
+
+
+export function UpdateAll(socket: Socket): void {
+    let sendQueue: any[][] = []
+    let locationQueue: LocationNode[] = []
+
+    let location: LocationNode
+    for (location of serverSave) {
+        locationQueue.push(location)
+        if (locationQueue.length >= 8) {
+            sendQueue.push([...locationQueue])
+            locationQueue = []
+        }
+    }
+    sendQueue.push([...locationQueue])
+    ProcessSendQueue(sendQueue, socket)
 }

@@ -78,7 +78,7 @@ function HandleServerPacket(chunk: Buffer): void {
 }
 
 export function IsConnectedToServer(): boolean {
-    return serverConnection.readyState === 'open'
+    return serverConnection?.readyState === 'open'
 }
 
 export function DisconnectFromServer(): void {

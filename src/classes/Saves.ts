@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto"
 import SerializedLocation from "../types/SerializedLocation";
 import LocationNode from "../types/LocationNode";
 import Locations from "./Locations";
@@ -8,6 +9,12 @@ import Entrance from "../types/Entrance";
 const SAVE_LOCATION = path.resolve("saves", "save.json")
 
 class Saves {
+    public static GetSaveMD5(): string {
+        return crypto.createHash('md5')
+            .update(JSON.stringify(this.Serialize()))
+            .digest('hex')
+    }
+
     public static Serialize(): SerializedLocation[] {
         return Locations.all.map((location: LocationNode): SerializedLocation => ({
             name: location.name,

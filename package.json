@@ -11,11 +11,18 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@eslint/js": "^9.32.0",
     "@types/chalk": "^0.4.31",
     "@types/node": "^24.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "@yao-pkg/pkg": "^6.6.0",
     "chalk": "^4.1.2",
-    "typescript": "^5.8.3"
+    "eslint": "^9.32.0",
+    "globals": "^16.3.0",
+    "jiti": "^2.5.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0"
   },
   "dependencies": {
     "chalk": "4.1.2"

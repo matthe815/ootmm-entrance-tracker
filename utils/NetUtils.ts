@@ -7,6 +7,7 @@ import Entrance from "../src/types/Entrance";
 import {TextEncoder} from "util";
 import path from "node:path";
 import {existsSync, readFileSync, writeFileSync} from "fs";
+import chalk from "chalk";
 
 let serverConnection: Socket
 
@@ -186,7 +187,10 @@ export function UpdateGroup(nodes: LocationNode[]): void {
 
 
 export function UpdateAll(): void {
-    if (!serverConnection) return
+    if (!IsConnectedToServer()) {
+        console.error(chalk.red('You are not currently connected to a sync server.'))
+        return
+    }
     const buffer: Uint8Array<ArrayBuffer> = Buffer.from(SerializeLocationArray(Locations.all))
     serverConnection.write(buffer)
 }

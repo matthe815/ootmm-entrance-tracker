@@ -71,12 +71,12 @@ function FindPathToTarget(start: LocationNode, target: LocationNode): PathStep[]
 
 function handleLink(): void {
     console.log('Enter the initial area name.')
-    ConsoleInput.GetAreaInput().then((area: LocationNode): void => {
+    ConsoleInput.GetAreaInput(areaAutoCompleter).then((area: LocationNode): void => {
         console.log('Which exit must be taken?')
         console.log(Locations.GetUnlinkedEntrances(area)?.map((e: MappedEntrance, index: number): string => `(${index + 1}) ${e.name}`)?.join("\n"))
         ConsoleInput.GetExitInput(area).then((exit: MappedEntrance): void => {
             console.log(`Enter the connected location.`);
-            ConsoleInput.GetAreaInput().then((connection: LocationNode): void => {
+            ConsoleInput.GetAreaInput(areaAutoCompleter).then((connection: LocationNode): void => {
                 console.log('Enter the entrance connected to:')
                 console.log(Locations.GetUnlinkedEntrances(connection)?.map((e: MappedEntrance, index: number): string => `(${index + 1}) ${e.name}`)?.join("\n"))
                 ConsoleInput.GetExitInput(connection).then((connectionEntrance: MappedEntrance) => {
@@ -118,6 +118,11 @@ function handleList(): void {
         console.log(` - ${location.connections.map((c: Entrance): string => `${c.location.name} (${c.name})`).join("\n - ")}`)
     }
     CreateCommandLine()
+}
+
+function areaAutoCompleter(line: string): [string[], string] {
+    const hits: string[] = Locations.all.filter((location: LocationNode) => location.name.startsWith(line)).map((location: LocationNode) => location.name)
+    return [hits.length > 0 ? hits : [], line]
 }
 
 function connectAutoCompleter(line: string): [string[], string] {

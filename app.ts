@@ -32,7 +32,7 @@ function CreateCommandLine(): void {
         output: process.stdout,
         prompt: '> ',
         completer: (line: string): [string[], string] => {
-            const completions: string[] = ['help','path','list','resume','update','connect','link','disconnect']
+            const completions: string[] = commands.map((c: Command) => c.name)
             const hits: string[] = completions.filter((completion: string) => completion.startsWith(line))
 
             return [hits.length > 0 ? hits : completions, line]
@@ -177,65 +177,85 @@ function handleConnect(): void {
             })
     })
 }
-//
-// const commands: Command[] = [
-//     {
-//         name: 'help',
-//         help_text: 'List every command and how to use them',
-//         executor: (): void => {
-//             console.log('(link) - Add a new connection between two entrances')
-//             console.log('(path) - View the route from one entrance to another')
-//             console.log('(list) - List the current connections')
-//             CreateCommandLine()
-//         }
-//     }
-// ]
 
-function handleCommand(line: string) {
-    const command: string = line.trim()
-    commandLine.close()
+function handleHelp() {
+    let command: Command
+    for (command of commands) {
+        console.log(`(${command.name}) - ${command.help_text}`)
+    }
+    CreateCommandLine()
+}
 
-    // if (!commands[command]) {
-    //     console.error(chalk.red(`Unknown command: ${command}`))
-    //     CreateCommandLine()
-    //     return
-    // }
-    //
-    // commands[command].executor()
-
-    switch (command.toLowerCase()) {
-        case 'link':
-            handleLink()
-            break
-        case 'path':
-            handlePath()
-            break
-        case 'list':
-            handleList()
-            break
-        case 'connect':
-            handleConnect()
-            break
-        case 'disconnect':
-            handleDisconnect()
-            break
-        case 'update':
+const commands: Command[] = [
+    {
+        name: 'help',
+        help_text: 'List every command and how to use them',
+        executor: handleHelp
+    },
+    {
+        name: 'link',
+        help_text: 'Connect one entrance to another',
+        executor: handleLink
+    },
+    {
+        name: 'path',
+        help_text: 'Determine the path from one point to another',
+        executor: handlePath
+    },
+    {
+        name: 'list',
+        help_text: 'List the current entrance links',
+        executor: handleList
+    },
+    {
+        name: 'connect',
+        help_text: 'Connect to a remote server for entrance synching',
+        executor: handleConnect
+    },
+    {
+        name: 'disconnect',
+        help_text: 'Disconnect from the current sync server',
+        executor: handleDisconnect
+    },
+    {
+        name: 'update',
+        help_text: 'Sync your local save with the server\'s current save',
+        executor: () => {
+            console.log('Syncing local server and remote save')
             UpdateAll()
             CreateCommandLine()
-            break
-        case 'refresh':
+        }
+    },
+    {
+        name: 'refresh',
+        help_text: 'Refresh the entrance file and add new entrances',
+        executor: (): void  => {
             console.log('Entrance file has been refreshed.')
             Locations.entrances = JSON.parse(String(fs.readFileSync("entrances.json")))
             CreateCommandLine()
-            break
-        case 'exit':
-        case 'quit':
-            commandLine.close();
-            return
-        default:
-            console.log(`Unknown command: ${command}`)
-            CreateCommandLine()
+        }
+    },
+    {
+        name: 'exit',
+        help_text: 'End the current application session',
+        executor: (): void => {
+            process.exit(0)
+        }
     }
+]
+
+function handleCommand(line: string) {
+    const input: string = line.trim()
+    const command: Command | null = commands.find((c: Command): boolean => c.name === input) ?? null
+
+    commandLine.close()
+    if (!command) {
+        console.error(chalk.red(`Unknown command: ${command}`))
+        CreateCommandLine()
+        return
+    }
+
+    command.executor()
 }
 
 Saves.Load()

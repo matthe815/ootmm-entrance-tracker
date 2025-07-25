@@ -2,8 +2,11 @@ import readline, {Interface} from "readline";
 import LocationNode from "../types/LocationNode";
 import Locations from "./Locations";
 import {MappedEntrance} from "../types/LocationMapping";
+import chalk from 'chalk';
 
 class ConsoleInput {
+    public static command = chalk.yellow
+    public static location = chalk.green
     static inputLine: Interface
 
     public static StartInput(completer?: (line: string) => [string[], string]): void {

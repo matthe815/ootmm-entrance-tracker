@@ -26,7 +26,7 @@ function CreateCommandLine(): void {
         }
     });
 
-    console.log('Type "help" to see available commands.');
+    console.log(`Type \`${ConsoleInput.command('help')}\` to see available commands.`);
     commandLine.prompt();
     commandLine.once('line', (line: string) => {
         commandLine.close()
@@ -77,7 +77,7 @@ function handleLink(): void {
         ConsoleInput.GetExitInput(area).then((exit: MappedEntrance): void => {
             console.log(`Enter the connected location.`);
             ConsoleInput.GetAreaInput(areaAutoCompleter).then((connection: LocationNode): void => {
-                console.log('Enter the entrance connected to:')
+                console.log('Where does this exit lead to?')
                 console.log(Locations.GetUnlinkedEntrances(connection)?.map((e: MappedEntrance, index: number): string => `(${index + 1}) ${e.name}`)?.join("\n"))
                 ConsoleInput.GetExitInput(connection).then((connectionEntrance: MappedEntrance) => {
                     const entrance: Entrance = { name: connectionEntrance.name, location: area }
@@ -92,17 +92,17 @@ function handleLink(): void {
 
 function handlePath(): void {
     console.log('Enter the name of the area for which you want a route to.')
-    ConsoleInput.GetAreaInput().then((input: LocationNode): void => {
-        console.log('Choose the location to path from. Type \'spawn\' for Kokiri Forest')
+    ConsoleInput.GetAreaInput(areaAutoCompleter).then((input: LocationNode): void => {
+        console.log(`Choose the location to path from. Enter \`${ConsoleInput.command('spawn')}\` for ${ConsoleInput.location('Kokiri Forest')}`)
         const area: LocationNode = input as LocationNode
-        ConsoleInput.GetAreaInput().then((input: LocationNode): void => {
+        ConsoleInput.GetAreaInput(areaAutoCompleter).then((input: LocationNode): void => {
             const current: LocationNode = input as LocationNode
             let path = FindPathToTarget(current, area)
             if (path) {
-                console.log(`Found path to ${area.name}`)
-                console.log(path.map((n: PathStep): string => `${n.location.name} ${n.via ? `(${n.via})` : ''}`).join(' => '))
+                console.log(`Found path to ${ConsoleInput.location(area.name)}`)
+                console.log(path.map((n: PathStep): string => `${ConsoleInput.location(n.location.name)} ${n.via ? `(${n.via})` : ''}`).join(' => '))
             } else {
-                console.log(`Could not find path to ${current.name} from ${area.name}`)
+                console.log(`Could not find path to ${ConsoleInput.location(current.name)} from ${ConsoleInput.location(area.name)}`)
             }
             CreateCommandLine()
         })

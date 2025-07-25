@@ -9,7 +9,11 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/chalk": "^0.4.31",
     "@types/node": "^24.1.0",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1"
   }
 }

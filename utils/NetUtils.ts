@@ -39,6 +39,7 @@ function HandleServerPacket(chunk: Buffer): void {
 
     switch (op) {
         case 1:
+            let updated = false
             let splitIndex: number = 1;
             while ((splitIndex = dataBuffer.indexOf(0x00)) !== -1) {
                 const chunk = dataBuffer.slice(0, splitIndex);
@@ -61,6 +62,7 @@ function HandleServerPacket(chunk: Buffer): void {
                             const linkedLocation: LocationNode | null = Locations.Find(entrance.location)
                             if (!linkedLocation) continue
 
+                            updated = true
                             savedLoc.connections.push({
                                 name: entrance.name,
                                 location: linkedLocation
@@ -72,7 +74,7 @@ function HandleServerPacket(chunk: Buffer): void {
                     console.error('Failed to parse location:', err);
                 }
             }
-            Saves.Save()
+            if (updated) Saves.Save()
             break
     }
 }

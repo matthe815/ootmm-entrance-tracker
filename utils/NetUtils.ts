@@ -8,6 +8,7 @@ import {TextEncoder} from "util";
 import path from "node:path";
 import {existsSync, readFileSync, writeFileSync} from "fs";
 import chalk from "chalk";
+import Saves from "../src/classes/Saves";
 
 let serverConnection: Socket
 
@@ -50,12 +51,20 @@ function HandleServerPacket(chunk: Buffer): void {
 
                     let savedLoc: LocationNode | undefined
                     if ((savedLoc = Locations.all.find((l: LocationNode): boolean => l.name === location.name))) {
-                        let entrance: Entrance
+                        let entrance: { name: string, location: string }
                         for (entrance of location.entrances) {
+                            if (entrance.name === '') continue
                             if (savedLoc.connections.find((e: Entrance): boolean => e.name === entrance.name)) {
                                 continue
                             }
-                            savedLoc.connections.push(entrance)
+
+                            const linkedLocation: LocationNode | null = Locations.Find(entrance.location)
+                            if (!linkedLocation) continue
+
+                            savedLoc.connections.push({
+                                name: entrance.name,
+                                location: linkedLocation
+                            })
                             console.log(`🆕 Stored new entrance: ${location.name} (${entrance.name})`);
                         }
                     }
@@ -63,6 +72,7 @@ function HandleServerPacket(chunk: Buffer): void {
                     console.error('Failed to parse location:', err);
                 }
             }
+            Saves.Save()
             break
     }
 }

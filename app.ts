@@ -20,6 +20,12 @@ import chalk from "chalk";
 const readline = require('readline');
 let commandLine: Interface
 
+type Command = {
+    name: string
+    help_text: string
+    executor: () => void
+}
+
 function CreateCommandLine(): void {
     commandLine = readline.createInterface({
         input: process.stdin,
@@ -171,18 +177,33 @@ function handleConnect(): void {
             })
     })
 }
+//
+// const commands: Command[] = [
+//     {
+//         name: 'help',
+//         help_text: 'List every command and how to use them',
+//         executor: (): void => {
+//             console.log('(link) - Add a new connection between two entrances')
+//             console.log('(path) - View the route from one entrance to another')
+//             console.log('(list) - List the current connections')
+//             CreateCommandLine()
+//         }
+//     }
+// ]
 
 function handleCommand(line: string) {
-    const command: string = line
+    const command: string = line.trim()
     commandLine.close()
 
+    // if (!commands[command]) {
+    //     console.error(chalk.red(`Unknown command: ${command}`))
+    //     CreateCommandLine()
+    //     return
+    // }
+    //
+    // commands[command].executor()
+
     switch (command.toLowerCase()) {
-        case 'help':
-            console.log('(link) - Add a new connection between two entrances')
-            console.log('(path) - View the route from one entrance to another')
-            console.log('(list) - List the current connections')
-            CreateCommandLine()
-            break
         case 'link':
             handleLink()
             break

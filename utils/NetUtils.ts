@@ -9,6 +9,7 @@ import path from "node:path";
 import {existsSync, readFileSync, writeFileSync} from "fs";
 import chalk from "chalk";
 import Saves from "../src/classes/Saves";
+import {clearInterval} from "timers";
 
 let serverConnection: Socket
 
@@ -196,12 +197,37 @@ export function UpdateGroup(nodes: LocationNode[]): void {
     serverConnection.write(buffer)
 }
 
+function ProcessSendQueue(queue: any[][]) {
+    let interval: NodeJS.Timeout
+    queue = queue.reverse()
+    interval = setInterval(() => {
+        if (queue.length === 0) clearInterval(interval)
+
+        let packet = queue.pop()
+        if (!packet) return
+
+        UpdateGroup(packet)
+    }, 1000)
+}
+
 
 export function UpdateAll(): void {
     if (!IsConnectedToServer()) {
         console.error(chalk.red('You are not currently connected to a sync server.'))
         return
     }
-    const buffer: Uint8Array = Buffer.from(SerializeLocationArray(Locations.all))
-    serverConnection.write(buffer)
+
+    let sendQueue: any[][] = []
+    let locationQueue: LocationNode[] = []
+
+    let location: LocationNode
+    for (location of Locations.all) {
+        locationQueue.push(location)
+        if (locationQueue.length >= 8) {
+            sendQueue.push([...locationQueue])
+            locationQueue = []
+        }
+    }
+    sendQueue.push([...locationQueue])
+    ProcessSendQueue(sendQueue)
 }

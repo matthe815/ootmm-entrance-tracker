@@ -54,7 +54,8 @@
   { "name": "Graveyard", "entrances": [
     { "name": "GRV Kakariko Village", "type": "exterior" },
     { "name": "GRV Royal Family's Tomb", "type": "grotto" },
-    { "name": "GRV Dampe's Grave", "type": "grotto" }
+    { "name": "GRV Dampe's Grave", "type": "grotto" },
+    { "name": "GRV Redead Grave", "type": "grotto" }
   ] },
   { "name": "Death Mountain Trail", "entrances": [
     { "name": "DMT Kakariko Village", "type": "exterior" },

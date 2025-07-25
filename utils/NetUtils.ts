@@ -206,7 +206,10 @@ function ProcessSendQueue(queue: any[][]) {
     let interval: NodeJS.Timeout
     queue = queue.reverse()
     interval = setInterval(() => {
-        if (queue.length === 0) clearInterval(interval)
+        if (queue.length === 0) {
+            clearInterval(interval)
+            RequestUpdate()
+        }
 
         let packet = queue.pop()
         if (!packet) return

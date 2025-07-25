@@ -223,7 +223,6 @@ const commands: Command[] = [
         executor: () => {
             console.log('Syncing local server and remote save')
             UpdateAll()
-            RequestUpdate()
             CreateCommandLine()
         }
     },

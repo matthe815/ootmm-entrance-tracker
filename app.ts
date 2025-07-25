@@ -7,7 +7,13 @@ import {MappedEntrance} from "./src/types/LocationMapping";
 import EntranceLinks from "./src/classes/EntranceLinks";
 import Saves from "./src/classes/Saves";
 import ConsoleInput from "./src/classes/ConsoleInput";
-import {ConnectToServer, GetConnectionHistory, ParseConnectionPlaceholders, UpdateAll} from "./utils/NetUtils";
+import {
+    ConnectToServer, DisconnectFromServer,
+    GetConnectionHistory,
+    IsConnectedToServer,
+    ParseConnectionPlaceholders,
+    UpdateAll
+} from "./utils/NetUtils";
 import fs from "fs";
 import chalk from "chalk";
 
@@ -20,7 +26,7 @@ function CreateCommandLine(): void {
         output: process.stdout,
         prompt: '> ',
         completer: (line: string): [string[], string] => {
-            const completions: string[] = ['help','path','list','resume','update','connect','link']
+            const completions: string[] = ['help','path','list','resume','update','connect','link','disconnect']
             const hits: string[] = completions.filter((completion: string) => completion.startsWith(line))
 
             return [hits.length > 0 ? hits : completions, line]
@@ -132,6 +138,17 @@ function connectAutoCompleter(line: string): [string[], string] {
     return [hits.length > 0 ? hits : history, line]
 }
 
+function handleDisconnect(): void {
+    if (!IsConnectedToServer()) {
+        console.error(chalk.red('You are not currently connected to a sync server.'))
+        return
+    }
+
+    DisconnectFromServer()
+    console.log('Successfully disconnected from sync server.')
+    CreateCommandLine()
+}
+
 function handleConnect(): void {
     const connectionHistory: string[] = GetConnectionHistory()
     console.log('Input the IP address of the server to connect to.')
@@ -149,7 +166,7 @@ function handleConnect(): void {
         ConnectToServer(input)
             .then(CreateCommandLine)
             .catch((): void => {
-                console.error(`${chalk.red('Failed to connect to provided sync server.')}`)
+                console.error(chalk.red('Failed to connect to provided sync server.'))
                 CreateCommandLine()
             })
     })
@@ -177,6 +194,9 @@ function handleCommand(line: string) {
             break
         case 'connect':
             handleConnect()
+            break
+        case 'disconnect':
+            handleDisconnect()
             break
         case 'update':
             UpdateAll()

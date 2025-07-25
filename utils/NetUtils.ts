@@ -66,6 +66,16 @@ function HandleServerPacket(chunk: Buffer): void {
     }
 }
 
+export function IsConnectedToServer(): boolean {
+    return serverConnection.readyState === 'open'
+}
+
+export function DisconnectFromServer(): void {
+    if (!IsConnectedToServer()) return
+    serverConnection.end()
+    serverConnection.destroy()
+}
+
 export function ConnectToServer(host: string): Promise<void> {
     AddConnectionHistory(host)
 

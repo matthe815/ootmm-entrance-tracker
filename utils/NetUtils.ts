@@ -191,6 +191,11 @@ export function SerializeLocationArray(locations: LocationNode[]): Uint8Array {
     return NetSerializer.WriteChunksToBuffer(0x01, chunks)
 }
 
+export function RequestUpdate(): void {
+    const buffer = Buffer.from(Uint8Array.from([0x02]))
+    serverConnection.write(buffer)
+}
+
 export function UpdateGroup(nodes: LocationNode[]): void {
     if (!serverConnection) return
     const buffer: Uint8Array = Buffer.from(SerializeLocationArray(nodes))

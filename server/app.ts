@@ -45,7 +45,10 @@ const server: Server = net.createServer((socket: Socket) => {
                     }
                 }
 
-                console.log("Sending update back to client")
+                break
+            case 2:
+                console.log('Sending save update by request of client')
+                UpdateAll(socket)
                 break
         }
 

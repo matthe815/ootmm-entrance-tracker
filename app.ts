@@ -11,7 +11,7 @@ import {
     ConnectToServer, DisconnectFromServer,
     GetConnectionHistory,
     IsConnectedToServer,
-    ParseConnectionPlaceholders,
+    ParseConnectionPlaceholders, RequestUpdate,
     UpdateAll
 } from "./utils/NetUtils";
 import fs from "fs";
@@ -223,6 +223,7 @@ const commands: Command[] = [
         executor: () => {
             console.log('Syncing local server and remote save')
             UpdateAll()
+            RequestUpdate()
             CreateCommandLine()
         }
     },

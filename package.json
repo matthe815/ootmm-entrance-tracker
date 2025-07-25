@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pkg": "npm run build && pkg .",
+    "build": "tsc",
+    "dev": "ts-node app.ts",
+    "build:dev": "tsc && node build/app.js"
   },
   "author": "",
   "license": "ISC",
@@ -11,9 +15,19 @@
   "devDependencies": {
     "@types/chalk": "^0.4.31",
     "@types/node": "^24.1.0",
+    "@yao-pkg/pkg": "^6.6.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "chalk": "^5.4.1"
+    "chalk": "4.1.2"
+  },
+  "bin": "build/app.js",
+  "pkg": {
+    "scripts": "build/**/*.js",
+    "assets": "entrances.json",
+    "targets": [
+      "node22-win-x64"
+    ],
+    "outputPath": "dist"
   }
 }

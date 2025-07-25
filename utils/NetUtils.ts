@@ -1,25 +1,42 @@
-import { connect } from "node:net"
+import {connect} from "node:net"
 import Locations from "../src/classes/Locations";
 import LocationNode from "../src/types/LocationNode";
 import {Socket} from "net";
 import SerializedLocation from "../src/types/SerializedLocation";
 import Entrance from "../src/types/Entrance";
+import {TextEncoder} from "util";
+import path from "node:path";
+import {existsSync, readFileSync, writeFileSync} from "fs";
+
 let serverConnection: Socket
 
-let SERVER_HOST: string = 'localhost'
+const connectionHistoryPath: string = path.resolve("connection_history.json")
 
-export function setHost(host: string): void {
-    SERVER_HOST = host
+export function ParseConnectionPlaceholders(host: string): string {
+    if (host === '') return 'localhost'
+    return host
 }
 
-export function getHost(): string {
-    return SERVER_HOST
+export function GetConnectionHistory(): string[] {
+    if (!existsSync(connectionHistoryPath)) return []
+    return JSON.parse(String(readFileSync(connectionHistoryPath)))
 }
 
-export function ConnectToServer() {
-    serverConnection = connect(13234, getHost(), () => {
+export function AddConnectionHistory(host: string): void {
+    const history: string[] = GetConnectionHistory()
+    if (history.includes(host)) return
+
+    history.push(host)
+    writeFileSync(connectionHistoryPath, JSON.stringify(history))
+}
+
+export function ConnectToServer(host: string): void {
+    AddConnectionHistory(host)
+
+    serverConnection = connect(13234, host, (): void  => {
         console.log("Successfully connected to sync server.")
     })
+
     let dataBuffer = Buffer.alloc(0);
     serverConnection.on("data", (chunk): void => {
         const op: number = chunk[0]
@@ -58,8 +75,8 @@ export function ConnectToServer() {
 }
 
 function stringToBuffer(str: string) {
-    const encoder = new TextEncoder();
-    const bytes = encoder.encode(str);
+    const encoder: TextEncoder = new TextEncoder();
+    const bytes: Uint8Array<ArrayBufferLike> = encoder.encode(str);
     if (bytes.length > 255) throw new Error("String too long for UInt8 length");
     return Uint8Array.from([bytes.length, ...bytes]);
 }

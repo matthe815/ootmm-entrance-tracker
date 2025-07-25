@@ -7,7 +7,7 @@ import {MappedEntrance} from "./src/types/LocationMapping";
 import EntranceLinks from "./src/classes/EntranceLinks";
 import Saves from "./src/classes/Saves";
 import ConsoleInput from "./src/classes/ConsoleInput";
-import {ConnectToServer, getHost, setHost, UpdateAll} from "./utils/NetUtils";
+import {ConnectToServer, GetConnectionHistory, ParseConnectionPlaceholders, UpdateAll} from "./utils/NetUtils";
 import fs from "fs";
 
 const readline = require('readline');
@@ -120,14 +120,27 @@ function handleList(): void {
     CreateCommandLine()
 }
 
-function handleConnect(): void {
-    console.log('Input the IP address to connect to. Type nothing for localhost')
-    ConsoleInput.GetTextInput().then((input: string): void => {
-        if (input == '') setHost('localhost')
-        else setHost(input)
+function connectAutoCompleter(line: string): [string[], string] {
+    const history: string[] = GetConnectionHistory()
+    const hits: string[] = history.filter((item: string) => item.startsWith(line))
+    return [hits.length > 0 ? hits : history, line]
+}
 
-        console.log(`Server host set to ${getHost()}:13234.`)
-        ConnectToServer()
+function handleConnect(): void {
+    const connectionHistory: string[] = GetConnectionHistory()
+    console.log('Input the IP address of the server to connect to.')
+    console.log('Press enter without any input for localhost.')
+
+    if (connectionHistory.length > 0) {
+        console.log('These are the servers you\'ve previously connected to. This input supports tab-completion.')
+        console.log(GetConnectionHistory().join("\n"))
+    }
+
+    ConsoleInput.GetTextInput(connectAutoCompleter).then((input: string): void => {
+        input = ParseConnectionPlaceholders(input)
+        console.log(`Server host set to ${input}:13234.`)
+
+        ConnectToServer(input)
         CreateCommandLine()
     })
 }

@@ -6,11 +6,12 @@ import {MappedEntrance} from "../types/LocationMapping";
 class ConsoleInput {
     static inputLine: Interface
 
-    public static StartInput(): void {
+    public static StartInput(completer?: (line: string) => [string[], string]): void {
         this.inputLine = readline.createInterface({
             input: process.stdin,
             output: process.stdout,
-            prompt: '> '
+            prompt: '> ',
+            completer
         })
 
         this.inputLine.prompt()
@@ -21,8 +22,8 @@ class ConsoleInput {
         this.inputLine.close()
     }
 
-    public static GetAreaInput(): Promise<LocationNode> {
-        this.StartInput()
+    public static GetAreaInput(completer?: (line: string) => [string[], string]): Promise<LocationNode> {
+        this.StartInput(completer)
         return new Promise((resolve) => {
             if (!this.inputLine) return
 
@@ -45,8 +46,8 @@ class ConsoleInput {
         })
     }
 
-    public static GetExitInput(area: LocationNode): Promise<MappedEntrance> {
-        this.StartInput()
+    public static GetExitInput(area: LocationNode, completer?: (line: string) => [string[], string]): Promise<MappedEntrance> {
+        this.StartInput(completer)
         return new Promise((resolve): void => {
             if (!this.inputLine) return
 
@@ -64,8 +65,8 @@ class ConsoleInput {
         })
     }
 
-    public static GetTextInput(): Promise<string> {
-        this.StartInput()
+    public static GetTextInput(completer?: (line: string) => [string[], string]): Promise<string> {
+        this.StartInput(completer)
         return new Promise((resolve): void => {
             if (!this.inputLine) return
 

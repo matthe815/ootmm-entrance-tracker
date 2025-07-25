@@ -25,9 +25,9 @@ class NetSerializer {
         return chunks
     }
 
-    public static WriteChunksToBuffer(op: number, chunks: any[]): Uint8Array<ArrayBuffer> {
+    public static WriteChunksToBuffer(op: number, chunks: any[]): Uint8Array {
         const totalLength = chunks.reduce((sum, arr) => sum + arr.length, 0) + 1
-        const buffer: Uint8Array<ArrayBuffer> = new Uint8Array(totalLength)
+        const buffer: Uint8Array = new Uint8Array(totalLength)
 
         let offset: number = 1
         for (const chunk of chunks) {
@@ -74,7 +74,7 @@ function stringToBuffer(str: string) {
     return Uint8Array.from([bytes.length, ...bytes]);
 }
 
-export function SerializeLocationArray(locations: any): Uint8Array<ArrayBuffer> {
+export function SerializeLocationArray(locations: any): Uint8Array {
     const chunks: any[] = [];
 
     let location: any

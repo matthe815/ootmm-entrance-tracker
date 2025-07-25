@@ -101,7 +101,7 @@ export function ConnectToServer(host: string): Promise<void> {
 
 function stringToBuffer(str: string) {
     const encoder: TextEncoder = new TextEncoder();
-    const bytes: Uint8Array<ArrayBufferLike> = encoder.encode(str);
+    const bytes: Uint8Array = encoder.encode(str);
     if (bytes.length > 255) throw new Error("String too long for UInt8 length");
     return Uint8Array.from([bytes.length, ...bytes]);
 }
@@ -156,9 +156,9 @@ class NetSerializer {
         return chunks
     }
 
-    public static WriteChunksToBuffer(op: number, chunks: any[]): Uint8Array<ArrayBuffer> {
+    public static WriteChunksToBuffer(op: number, chunks: any[]): Uint8Array {
         const totalLength = chunks.reduce((sum, arr) => sum + arr.length, 0) + 1
-        const buffer: Uint8Array<ArrayBuffer> = new Uint8Array(totalLength)
+        const buffer: Uint8Array = new Uint8Array(totalLength)
 
         let offset: number = 1
         for (const chunk of chunks) {
@@ -171,7 +171,7 @@ class NetSerializer {
     }
 }
 
-export function SerializeLocationArray(locations: LocationNode[]): Uint8Array<ArrayBuffer> {
+export function SerializeLocationArray(locations: LocationNode[]): Uint8Array {
     const chunks: any[] = [];
 
     let location: LocationNode
@@ -190,7 +190,7 @@ export function SerializeLocationArray(locations: LocationNode[]): Uint8Array<Ar
 
 export function UpdateGroup(nodes: LocationNode[]): void {
     if (!serverConnection) return
-    const buffer: Uint8Array<ArrayBuffer> = Buffer.from(SerializeLocationArray(nodes))
+    const buffer: Uint8Array = Buffer.from(SerializeLocationArray(nodes))
     serverConnection.write(buffer)
 }
 
@@ -200,6 +200,6 @@ export function UpdateAll(): void {
         console.error(chalk.red('You are not currently connected to a sync server.'))
         return
     }
-    const buffer: Uint8Array<ArrayBuffer> = Buffer.from(SerializeLocationArray(Locations.all))
+    const buffer: Uint8Array = Buffer.from(SerializeLocationArray(Locations.all))
     serverConnection.write(buffer)
 }

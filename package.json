@@ -16,5 +16,17 @@
     "@yao-pkg/pkg": "^6.6.0",
     "chalk": "^4.1.2",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "chalk": "4.1.2"
+  },
+  "bin": "build/app.js",
+  "pkg": {
+    "scripts": "build/**/*.js",
+    "assets": "entrances.json",
+    "targets": [
+      "node22-win-x64"
+    ],
+    "outputPath": "dist"
   }
 }

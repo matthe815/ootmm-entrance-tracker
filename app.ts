@@ -3,7 +3,7 @@ import Locations from "./src/classes/Locations";
 import LocationNode from "./src/types/LocationNode";
 import Entrance from "./src/types/Entrance";
 import PathStep from "./src/types/PathStep";
-import {EntranceType, MappedEntrance} from "./src/types/LocationMapping";
+import {MappedEntrance} from "./src/types/LocationMapping";
 import EntranceLinks from "./src/classes/EntranceLinks";
 import Saves from "./src/classes/Saves";
 import ConsoleInput from "./src/classes/ConsoleInput";
@@ -17,7 +17,13 @@ function CreateCommandLine(): void {
     commandLine = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
-        prompt: '> '
+        prompt: '> ',
+        completer: (line: string): [string[], string] => {
+            const completions: string[] = ['help','path','list','resume','update','connect','link']
+            const hits: string[] = completions.filter((completion: string) => completion.startsWith(line))
+
+            return [hits.length > 0 ? hits : completions, line]
+        }
     });
 
     console.log('Type "help" to see available commands.');
@@ -30,36 +36,34 @@ function CreateCommandLine(): void {
 
 function FindPathToTarget(start: LocationNode, target: LocationNode): PathStep[] | null {
     const queue: { node: LocationNode; path: PathStep[] }[] = [];
-    const visited = new Set<LocationNode>();
+    const visited: Set<LocationNode> = new Set<LocationNode>();
 
-    // Start with initial node
     queue.push({node: start, path: [{location: start}]});
 
     while (queue.length > 0) {
-        const {node, path} = queue.shift()!;
-        if (visited.has(node)) continue;
+        const {node, path} = queue.shift()!
+        if (visited.has(node)) continue
 
-        visited.add(node);
+        visited.add(node)
 
         if (node === target) {
-            return path;
+            return path
         }
 
-        for (const entrance of node.connections) {
-            const mapped = Locations.FindEntrance(node, entrance.name);
-            if (!mapped || mapped.type === "none") continue;
+        let entrance: Entrance
+        for (entrance of node.connections) {
+            const mapped: MappedEntrance | null = Locations.FindEntrance(node, entrance.name);
+            if (!mapped || mapped.type === "none") continue
 
-            const nextPath: PathStep[] = [...path];
+            const nextPath: PathStep[] = [...path]
 
             nextPath[nextPath.length - 1] = {
                 ...nextPath[nextPath.length - 1],
                 via: entrance.name
-            };
+            }
 
-            // ➕ Push the new step (arriving at this new node)
-            nextPath.push({ location: entrance.location });
-
-            queue.push({ node: entrance.location, path: nextPath });
+            nextPath.push({ location: entrance.location })
+            queue.push({ node: entrance.location, path: nextPath })
         }
     }
     return null;

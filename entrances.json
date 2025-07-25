@@ -164,6 +164,7 @@
     { "name": "TF Milk Road", "type": "exterior" },
     { "name": "TF Ikana Canyon", "type": "exterior" },
     { "name": "TF Ikana Graveyard", "type": "exterior" },
+    { "name": "TF Termina Field - Ikana Grotto", "type": "exterior" },
     { "name": "TF Snowhead", "type": "exterior" },
     { "name": "TF Great Bay Coast", "type": "exterior" },
     { "name": "TF Near Southern Swamp Grotto", "type": "grotto" },
@@ -230,6 +231,10 @@
   ] },
   { "name": "Ikana Graveyard", "entrances": [
     { "name": "IC Termina Field", "type": "exterior" }
+  ] },
+  { "name": "Beneath The Well", "entrances": [
+    { "name": "BTW Ancient Castle", "type": "exterior" },
+    { "name": "BTW Ikana Canyon", "type": "exterior" }
   ] },
   { "name": "Ancient Castle of Ikana", "entrances": [] },
   { "name": "Stone Tower", "entrances": [

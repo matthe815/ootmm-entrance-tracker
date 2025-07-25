@@ -17,7 +17,8 @@
   { "name": "Sacred Forest Meadow", "entrances": [
     { "name": "SFM Lost Woods", "type": "exterior" },
     { "name": "SFM Wolfos Grotto", "type": "grotto" },
-    { "name": "SFM Forest Temple", "type": "dungeon" }
+    { "name": "SFM Forest Temple", "type": "dungeon" },
+    { "name": "SFM Fairy Grotto", "type": "grotto" }
   ] },
   { "name": "Link's House", "entrances": [
     { "name": "LH Kokiri Forest", "type": "exterior" }
@@ -111,6 +112,9 @@
   { "name": "Gerudo Fortress", "entrances": [
     { "name": "GF Gerudo Training Ground", "type": "dungeon" },
     { "name": "GV Haunted Wastelands", "type": "exterior" }
+  ] },
+  { "name": "Gerudo Training Ground", "entrances": [
+    { "name": "GTG Gerudo Fortress", "type": "exterior" }
   ] },
   { "name": "Haunted Wasteland", "entrances": [] },
   { "name": "Desert Colossus", "entrances": [] },

@@ -232,6 +232,7 @@ const commands: Command[] = [
         executor: (): void  => {
             console.log('Entrance file has been refreshed.')
             Locations.entrances = JSON.parse(String(fs.readFileSync("entrances.json")))
+            Saves.AddMissingLocations()
             CreateCommandLine()
         }
     },

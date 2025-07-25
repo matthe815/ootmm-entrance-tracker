@@ -5,6 +5,8 @@ import SerializedLocation from "../types/SerializedLocation";
 import LocationNode from "../types/LocationNode";
 import Locations from "./Locations";
 import Entrance from "../types/Entrance";
+import {MappedLocation} from "../types/LocationMapping";
+import ConsoleInput from "./ConsoleInput";
 
 const SAVE_LOCATION = path.resolve("saves", "save.json")
 
@@ -49,9 +51,19 @@ class Saves {
         console.log('Tracker progress saved successfully.')
     }
 
+    public static AddMissingLocations(): void {
+        let location: MappedLocation
+        for (location of Locations.entrances) {
+            if (Locations.all.find((l: LocationNode): boolean => l.name === location.name)) continue
+            console.log(`Added missing location \`${ConsoleInput.location(location.name)}\` to local save.`)
+            Locations.all.push({ name: location.name, connections: [] })
+        }
+    }
+
     public static Load(): void {
         if (!fs.existsSync(SAVE_LOCATION)) Locations.LoadDefault()
         else Saves.Deserialize(JSON.parse(String(fs.readFileSync(SAVE_LOCATION))))
+        Saves.AddMissingLocations()
 
         Locations.spawn = Locations.all[0]
     }

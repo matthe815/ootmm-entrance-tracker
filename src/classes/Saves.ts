@@ -43,6 +43,7 @@ class Saves {
     }
 
     public static Save(): void {
+        if (!fs.existsSync(path.dirname(SAVE_LOCATION))) fs.mkdirSync(path.dirname(SAVE_LOCATION), { recursive: true });
         const save: SerializedLocation[] = Saves.Serialize()
         fs.writeFileSync(SAVE_LOCATION, JSON.stringify(save))
         console.log('Tracker progress saved successfully.')

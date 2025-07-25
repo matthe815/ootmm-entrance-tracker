@@ -2,11 +2,17 @@ import LocationNode from "../types/LocationNode";
 import {MappedEntrance, MappedLocation} from "../types/LocationMapping";
 import fs from "fs";
 import Entrance from "../types/Entrance";
+import Entrances from "../../entrances.json";
 
 class Locations {
     public static all: LocationNode[]
     public static spawn: LocationNode
-    public static entrances: MappedLocation[] = JSON.parse(String(fs.readFileSync("entrances.json")))
+    public static entrances: MappedLocation[] = this.LoadEntrances()
+
+    private static LoadEntrances(): MappedLocation[] {
+        if (fs.existsSync("entrances.json")) return JSON.parse(String(fs.readFileSync("entrances.json"))) as MappedLocation[]
+        return Entrances as MappedLocation[]
+    }
 
     public static LoadDefault(): void {
         this.all = this.entrances.map((location: MappedLocation): LocationNode => ({ name: location.name, connections: [] }))

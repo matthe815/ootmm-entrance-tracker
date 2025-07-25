@@ -7,6 +7,7 @@ import chalk from 'chalk';
 class ConsoleInput {
     public static command = chalk.yellow
     public static location = chalk.green
+    public static network = chalk.bold
     static inputLine: Interface
 
     public static StartInput(completer?: (line: string) => [string[], string]): void {

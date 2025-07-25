@@ -9,6 +9,7 @@ import Saves from "./src/classes/Saves";
 import ConsoleInput from "./src/classes/ConsoleInput";
 import {ConnectToServer, GetConnectionHistory, ParseConnectionPlaceholders, UpdateAll} from "./utils/NetUtils";
 import fs from "fs";
+import chalk from "chalk";
 
 const readline = require('readline');
 let commandLine: Interface
@@ -134,19 +135,23 @@ function connectAutoCompleter(line: string): [string[], string] {
 function handleConnect(): void {
     const connectionHistory: string[] = GetConnectionHistory()
     console.log('Input the IP address of the server to connect to.')
-    console.log('Press enter without any input for localhost.')
+    console.log(`Press enter without any input for ${ConsoleInput.network('localhost')}.`)
 
     if (connectionHistory.length > 0) {
         console.log('These are the servers you\'ve previously connected to. This input supports tab-completion.')
-        console.log(GetConnectionHistory().join("\n"))
+        console.log(GetConnectionHistory().map((loc: string): string => `${ConsoleInput.network(loc)}`).join("\n"))
     }
 
     ConsoleInput.GetTextInput(connectAutoCompleter).then((input: string): void => {
         input = ParseConnectionPlaceholders(input)
-        console.log(`Server host set to ${input}:13234.`)
+        console.log(`Attempting to connect to ${ConsoleInput.network(input)}:13234...`)
 
         ConnectToServer(input)
-        CreateCommandLine()
+            .then(CreateCommandLine)
+            .catch((): void => {
+                console.error(`${chalk.red('Failed to connect to provided sync server.')}`)
+                CreateCommandLine()
+            })
     })
 }
 

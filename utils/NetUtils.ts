@@ -30,48 +30,53 @@ export function AddConnectionHistory(host: string): void {
     writeFileSync(connectionHistoryPath, JSON.stringify(history))
 }
 
-export function ConnectToServer(host: string): void {
+function HandleServerPacket(chunk: Buffer): void {
+    const op: number = chunk[0]
+    let dataBuffer = Buffer.alloc(0);
+    dataBuffer = Buffer.concat([dataBuffer, chunk]).subarray(1);
+
+    switch (op) {
+        case 1:
+            let splitIndex: number = 1;
+            while ((splitIndex = dataBuffer.indexOf(0x00)) !== -1) {
+                const chunk = dataBuffer.slice(0, splitIndex);
+                dataBuffer = dataBuffer.slice(splitIndex + 1);
+
+                if (chunk.length === 0) continue
+
+                try {
+                    const { location } = deserializeLocation(chunk);
+
+                    let savedLoc: LocationNode | undefined
+                    if ((savedLoc = Locations.all.find((l: LocationNode): boolean => l.name === location.name))) {
+                        let entrance: Entrance
+                        for (entrance of location.entrances) {
+                            if (savedLoc.connections.find((e: Entrance): boolean => e.name === entrance.name)) {
+                                continue
+                            }
+                            savedLoc.connections.push(entrance)
+                            console.log(`🆕 Stored new entrance: ${location.name} (${entrance.name})`);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Failed to parse location:', err);
+                }
+            }
+            break
+    }
+}
+
+export function ConnectToServer(host: string): Promise<void> {
     AddConnectionHistory(host)
 
-    serverConnection = connect(13234, host, (): void  => {
-        console.log("Successfully connected to sync server.")
+    return new Promise((resolve, reject): void => {
+        serverConnection = connect(13234, host, (): void  => {
+            console.log("Successfully connected to sync server.")
+            serverConnection.on("data", HandleServerPacket)
+            resolve()
+        }).on('error', reject)
     })
 
-    let dataBuffer = Buffer.alloc(0);
-    serverConnection.on("data", (chunk): void => {
-        const op: number = chunk[0]
-        dataBuffer = Buffer.concat([dataBuffer, chunk]).subarray(1);
-
-        switch (op) {
-            case 1:
-                let splitIndex: number = 1;
-                while ((splitIndex = dataBuffer.indexOf(0x00)) !== -1) {
-                    const chunk = dataBuffer.slice(0, splitIndex);
-                    dataBuffer = dataBuffer.slice(splitIndex + 1);
-
-                    if (chunk.length === 0) continue
-
-                    try {
-                        const { location } = deserializeLocation(chunk);
-
-                        let savedLoc: LocationNode | undefined
-                        if ((savedLoc = Locations.all.find((l: LocationNode): boolean => l.name === location.name))) {
-                            let entrance: Entrance
-                            for (entrance of location.entrances) {
-                                if (savedLoc.connections.find((e: Entrance): boolean => e.name === entrance.name)) {
-                                    continue
-                                }
-                                savedLoc.connections.push(entrance)
-                                console.log(`🆕 Stored new entrance: ${location.name} (${entrance.name})`);
-                            }
-                        }
-                    } catch (err) {
-                        console.error('Failed to parse location:', err);
-                    }
-                }
-                break
-        }
-    })
 }
 
 function stringToBuffer(str: string) {

@@ -9,7 +9,7 @@ class EntranceLinks {
 
         UpdateGroup([ entrance.location, exit.location ])
 
-        console.log(`Linked ${exit.location.name} to ${entrance.location.name}`)
+        console.log(`🆕 Linked ${exit.location.name} to ${entrance.location.name}`)
         Saves.Save()
     }
 

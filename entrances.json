@@ -127,7 +127,9 @@
   { "name": "Forest Temple", "entrances": [] },
   { "name": "Fire Temple", "entrances": [] },
   { "name": "Water Temple", "entrances": [] },
-  { "name": "Shadow Temple", "entrances": [] },
+  { "name": "Shadow Temple", "entrances": [
+    { "name": "ST Graveyard", "type": "exterior" }
+  ] },
   { "name": "Spirit Temple", "entrances": [] },
   { "name": "Ganon's Castle", "entrances": [] },
 
@@ -206,24 +208,31 @@
     { "name": "WFT Woodfall", "type": "exterior" }
   ] },
   { "name": "Snowhead", "entrances": [
-    { "name": "SH Termina Field", "type": "exterior" }
+    { "name": "SH Mountain Village", "type": "exterior" }
   ] },
   { "name": "Snowhead Temple", "entrances": [] },
-  { "name": "Mountain Village", "entrances": [] },
+  { "name": "Mountain Village", "entrances": [
+    { "name": "MV Termina Field", "type": "exterior" },
+    { "name": "MV Goron Village", "type": "exterior" },
+    { "name": "MV Snowhead", "type": "exterior" }
+  ] },
   { "name": "Swamp Spider House", "entrances": [
     { "name": "SSH Southern Swamp", "type": "exterior" }
   ] },
   { "name": "Ocean Spider House", "entrances": [
     { "name": "OSH Great Bay Coast", "type": "exterior" }
   ] },
-  { "name": "Goron Village", "entrances": [] },
+  { "name": "Goron Village", "entrances": [
+    { "name": "GV Mountain Village", "type": "exterior" }
+  ] },
   { "name": "Great Bay Coast", "entrances": [
     { "name": "GBC Termina Field", "type": "exterior" },
     { "name": "GBC Sub Area", "type": "exterior" },
     { "name": "GBC Gerudo Fortress", "type": "exterior" },
     { "name": "GBC Aquarium", "type": "interior" },
     { "name": "GBC Skulltula House", "type": "exterior" },
-    { "name": "GBC Fishermans' House", "type": "exterior" }
+    { "name": "GBC Fishermans' House", "type": "exterior" },
+    { "name": "GBC Under Rock Grotto", "type": "grotto" }
   ] },
   { "name": "Pinnacle Rock", "entrances": [] },
   { "name": "Zora Cape", "entrances": [] },

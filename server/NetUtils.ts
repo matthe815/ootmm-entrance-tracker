@@ -1,6 +1,4 @@
 import {Socket} from "net";
-import {clearInterval} from "timers";
-import LocationNode from "../src/types/LocationNode";
 import {getSave} from "./app";
 import {RequestUpdate} from "../utils/NetUtils";
 

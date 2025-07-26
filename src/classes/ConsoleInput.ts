@@ -5,7 +5,6 @@ import {MappedEntrance} from "../types/LocationMapping";
 import chalk from 'chalk';
 import fs from "fs";
 import Saves from "./Saves";
-import path from "node:path";
 
 class ConsoleInput {
     public static command = chalk.yellow
@@ -40,7 +39,6 @@ class ConsoleInput {
                 count++
             }
             console.log(`(${count}) - New Game`)
-            console.log(`(${count + 1}) - New Game (Net Game)`)
             this.StartInput(completer)
             if (!this.inputLine) return
 
@@ -53,17 +51,7 @@ class ConsoleInput {
                     return
                 }
 
-                if (inputtedNumber === count + 1) {
-                    ConsoleInput.StopInput()
-                    console.log('Input the UUID of the game you wish to join.')
-                    this.GetTextInput().then((text: string): void => {
-                        Saves.Create(text)
-                        console.log('Successfully joined the net game. Please connect to the server and run `update` to begin.')
-                        resolve(Locations.all)
-                    })
-                    return
-                }
-                else if (inputtedNumber === (count)) {
+                if (inputtedNumber === (count)) {
                     ConsoleInput.StopInput()
                     Saves.Create()
                     resolve(Locations.all)

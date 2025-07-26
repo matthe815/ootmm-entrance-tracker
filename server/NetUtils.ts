@@ -113,11 +113,12 @@ function ProcessSendQueue(queue: any[][], socket: Socket) {
 
 
 export function UpdateAll(socket: Socket, uuid: string): void {
+    const save = getSave(uuid)
     let sendQueue: any[][] = []
     let locationQueue: LocationNode[] = []
 
     let location: LocationNode
-    for (location of getSave(uuid)) {
+    for (location of save) {
         locationQueue.push(location)
         if (locationQueue.length >= 8) {
             sendQueue.push([...locationQueue])

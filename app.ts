@@ -133,7 +133,7 @@ function handleList(): void {
     CreateCommandLine()
 }
 
-function selectGame(): void {
+function handleLoad(): void {
     ConsoleInput.GetGameInput()
         .then((locations: LocationNode[]): void => {
             let totalLocations: number = locations.length
@@ -141,7 +141,31 @@ function selectGame(): void {
             console.log(`Successfully loaded save with ${totalLocations} and ${totalEntrances} entrances.`)
             CreateCommandLine()
         })
-        .catch(() => selectGame())
+        .catch(() => handleLoad())
+}
+
+function handleJoin(): void {
+    if (!IsConnectedToServer()) {
+        console.error(chalk.red('You must be connected to a server before you can do this'))
+        CreateCommandLine()
+        return
+    }
+
+    console.log('Enter the UUID of the game for which to join.')
+    ConsoleInput.GetTextInput()
+        .then((input: string): void => {
+            if (input.length != 6) {
+                console.error(chalk.red('The supplied UUID is not valid.'))
+                handleJoin()
+                return
+            }
+
+            Locations.all = []
+            Locations.LoadDefault()
+            Saves.CURRENT_UUID = input
+            RequestUpdate()
+            CreateCommandLine()
+        })
 }
 
 function areaAutoCompleter(line: string): [string[], string] {
@@ -209,6 +233,16 @@ const commands: Command[] = [
         executor: handleLink
     },
     {
+        name: 'load',
+        help_text: 'Load a saved game',
+        executor: handleLoad
+    },
+    {
+        name: 'join',
+        help_text: 'Join an ongoing net game',
+        executor: handleJoin
+    },
+    {
         name: 'path',
         help_text: 'Determine the path from one point to another',
         executor: handlePath
@@ -270,4 +304,4 @@ function handleCommand(line: string) {
     command.executor()
 }
 
-selectGame()
+CreateCommandLine()

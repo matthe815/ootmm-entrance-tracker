@@ -8,7 +8,7 @@ const SAVE_LOCATION: string = path.resolve('server', 'saves')
 
 export function getSave(uuid: string): any {
     if (!fs.existsSync(SAVE_LOCATION)) fs.mkdirSync(SAVE_LOCATION)
-    if (!fs.existsSync(path.resolve(SAVE_LOCATION, uuid))) return []
+    if (!fs.existsSync(path.resolve(SAVE_LOCATION, `${uuid}.json`))) return []
     return JSON.parse(String(fs.readFileSync(path.resolve(SAVE_LOCATION, `${uuid}.json`))))
 }
 

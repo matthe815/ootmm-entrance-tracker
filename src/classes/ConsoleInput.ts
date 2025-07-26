@@ -79,13 +79,15 @@ class ConsoleInput {
             if (!this.inputLine) return
 
             this.inputLine.on("line", (input: string): void => {
+                if (!Saves.current) return;
+
                 if (input.toLowerCase() === 'spawn' && Saves.current) {
                     ConsoleInput.StopInput()
                     resolve(Saves.current.GetSpawn())
                     return
                 }
 
-                const area: LocationNode | null = Locations.Find(input)
+                const area: LocationNode | null = Saves.current.Get(input)
                 if (!area) {
                     console.log('Invalid area name provided.')
                     return

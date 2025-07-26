@@ -5,32 +5,16 @@ import {Socket} from "net";
 import SerializedLocation from "../src/types/SerializedLocation";
 import Entrance from "../src/types/Entrance";
 import {TextEncoder} from "util";
-import path from "node:path";
-import {existsSync, readFileSync, writeFileSync} from "fs";
 import chalk from "chalk";
 import Saves from "../src/classes/Saves";
-import {clearInterval, clearTimeout} from "timers";
+import {clearTimeout} from "timers";
+import ConnectionHistory from "../src/classes/ConnectionHistory";
 
 let serverConnection: Socket
-
-const connectionHistoryPath: string = path.resolve("connection_history.json")
 
 export function ParseConnectionPlaceholders(host: string): string {
     if (host === '') return 'localhost'
     return host
-}
-
-export function GetConnectionHistory(): string[] {
-    if (!existsSync(connectionHistoryPath)) return []
-    return JSON.parse(String(readFileSync(connectionHistoryPath)))
-}
-
-export function AddConnectionHistory(host: string): void {
-    const history: string[] = GetConnectionHistory()
-    if (history.includes(host)) return
-
-    history.push(host)
-    writeFileSync(connectionHistoryPath, JSON.stringify(history))
 }
 
 function HandleServerPacket(chunk: Buffer): void {
@@ -95,7 +79,7 @@ export function ConnectToServer(host: string): Promise<void> {
     return new Promise((resolve, reject): void => {
         serverConnection = connect(13234, host, (): void  => {
             console.log("Successfully connected to sync server.")
-            AddConnectionHistory(host)
+            ConnectionHistory.Add(host)
             serverConnection.on("data", HandleServerPacket)
             resolve()
         }).on('error', reject)

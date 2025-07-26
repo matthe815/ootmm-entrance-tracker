@@ -62,7 +62,7 @@ const server: Server = net.createServer((socket: Socket) => {
                 UpdateAll(socket, uuid)
                 break
         }
-        
+
         socket.write(Uint8Array.from([0x3]))
     });
 

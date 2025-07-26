@@ -9,13 +9,13 @@ import Saves from "./src/classes/Saves";
 import ConsoleInput from "./src/classes/ConsoleInput";
 import {
     ConnectToServer, DisconnectFromServer,
-    GetConnectionHistory,
     IsConnectedToServer,
     ParseConnectionPlaceholders, RequestUpdate,
     UpdateAll
 } from "./utils/NetUtils";
 import fs from "fs";
 import chalk from "chalk";
+import ConnectionHistory from "./src/classes/ConnectionHistory";
 
 const readline = require('readline');
 let commandLine: Interface
@@ -192,7 +192,7 @@ function areaAutoCompleter(line: string): [string[], string] {
 }
 
 function connectAutoCompleter(line: string): [string[], string] {
-    const history: string[] = GetConnectionHistory()
+    const history: string[] = ConnectionHistory.Get()
     const hits: string[] = history.filter((item: string) => item.startsWith(line))
     return [hits.length > 0 ? hits : history, line]
 }
@@ -209,13 +209,13 @@ function handleDisconnect(): void {
 }
 
 function handleConnect(): void {
-    const connectionHistory: string[] = GetConnectionHistory()
+    const connectionHistory: string[] = ConnectionHistory.Get()
     console.log('Input the IP address of the server to connect to.')
     console.log(`Press enter without any input for ${ConsoleInput.network('localhost')}.`)
 
     if (connectionHistory.length > 0) {
         console.log('These are the servers you\'ve previously connected to. This input supports tab-completion.')
-        console.log(GetConnectionHistory().map((loc: string): string => `${ConsoleInput.network(loc)}`).join("\n"))
+        console.log(connectionHistory.map((loc: string): string => `${ConsoleInput.network(loc)}`).join("\n"))
     }
 
     ConsoleInput.GetTextInput(connectAutoCompleter).then((input: string): void => {
@@ -284,13 +284,22 @@ const commands: Command[] = [
         name: 'update',
         help_text: 'Sync your local save with the server\'s current save',
         executor: () => {
+            if (!Saves.IsFileLoaded()) {
+                console.error(chalk.red('You must load a file before you can do this.'))
+                CreateCommandLine()
+                return
+            }
+
             console.log('Syncing local server and remote save')
             UpdateAll()
                 .then(() => {
                     RequestUpdate()
                     CreateCommandLine()
                 })
-                .catch((e) => console.error(chalk.red(e)))
+                .catch((e) => {
+                    console.error(chalk.red(e))
+                    CreateCommandLine()
+                })
         }
     },
     {

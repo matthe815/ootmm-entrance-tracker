@@ -43,6 +43,10 @@ class Saves {
         }
     }
 
+    public static IsFileLoaded(): boolean {
+        return this.CURRENT_UUID !== null
+    }
+
     public static Create(uuid?: string): string {
         if (!uuid) uuid = crypto.pseudoRandomBytes(3).toString('hex')
         this.CURRENT_UUID = uuid

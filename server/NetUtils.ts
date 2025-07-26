@@ -117,8 +117,6 @@ function ProcessSendQueue(queue: any[][], socket: Socket) {
     })
 }
 
-
-
 export function UpdateAll(socket: Socket, uuid: string): void {
     const save = getSave(uuid)
     let sendQueue: any[][] = []

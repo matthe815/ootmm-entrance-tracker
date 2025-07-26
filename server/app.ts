@@ -16,7 +16,7 @@ const server: Server = net.createServer((socket: Socket) => {
     let dataBuffer: Buffer = Buffer.alloc(0);
     socket.on('data', (chunk) => {
         const op: number = chunk[0]
-        const uuid: string = chunk[1] + chunk[2] + chunk[3]
+        const uuid: string = String(chunk[1]) + String(chunk[2]) + String(chunk[3])
         const save = getSave(uuid)
         console.log(uuid)
         dataBuffer = Buffer.concat([dataBuffer, chunk]).subarray(4);

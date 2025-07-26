@@ -34,7 +34,7 @@ const server: Server = net.createServer((socket: Socket) => {
                         const { location } = deserializeLocation(chunk);
 
                         let savedLoc: { name: string, entrances: { name: string, location: string }[] }
-                        if ((savedLoc = save.find(l => l.name === location.name))) {
+                        if ((savedLoc = save.find((l: any): boolean => l.name === location.name))) {
                             let entrance: { name: string, location: string }
                             for (entrance of location.entrances) {
                                 if (savedLoc.entrances.find((e: { location: string, name: string }): boolean => e.name === entrance.name)) {

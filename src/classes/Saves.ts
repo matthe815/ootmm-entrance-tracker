@@ -43,8 +43,8 @@ class Saves {
         }
     }
 
-    public static Create(): string {
-        let uuid: string = crypto.pseudoRandomBytes(3).toString('hex')
+    public static Create(uuid?: string): string {
+        if (!uuid) uuid = crypto.pseudoRandomBytes(3).toString('hex')
         this.CURRENT_UUID = uuid
         Locations.LoadDefault()
 

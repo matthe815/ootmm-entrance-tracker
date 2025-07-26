@@ -30,10 +30,7 @@ class ConsoleInput {
     }
 
     public static GetGameInput(completer?: (line: string) => [string[], string]): Promise<LocationNode[]> {
-        this.StartInput(completer)
         return new Promise((resolve, reject): void => {
-            if (!this.inputLine) return
-
             const files: string[] = fs.readdirSync(Saves.SAVE_LOCATION)
             console.log('Select the saved game to load.')
 
@@ -43,13 +40,39 @@ class ConsoleInput {
                 count++
             }
             console.log(`(${count}) - New Game`)
+            console.log(`(${count + 1}) - New Game (Net Game)`)
+            this.StartInput(completer)
+            if (!this.inputLine) return
 
             this.inputLine.on("line", (input: string): void => {
                 let inputtedNumber: number = parseInt(input)
-                if (inputtedNumber === count) {
+                if (isNaN(inputtedNumber)) {
+                    ConsoleInput.StopInput()
+                    console.error(chalk.red(`The supplied index ${input} is not a number.`))
+                    reject()
+                    return
+                }
+
+                if (inputtedNumber === count + 1) {
+                    ConsoleInput.StopInput()
+                    console.log('Input the UUID of the game you wish to join.')
+                    this.GetTextInput().then((text: string): void => {
+                        Saves.Create(text)
+                        console.log('Successfully joined the net game. Please connect to the server and run `update` to begin.')
+                        resolve(Locations.all)
+                    })
+                    return
+                }
+                else if (inputtedNumber === (count)) {
                     ConsoleInput.StopInput()
                     Saves.Create()
                     resolve(Locations.all)
+                    return
+                }
+                else if (inputtedNumber > count) {
+                    ConsoleInput.StopInput()
+                    console.error(chalk.red(`There is no save at index ${input}.`))
+                    reject()
                     return
                 }
 

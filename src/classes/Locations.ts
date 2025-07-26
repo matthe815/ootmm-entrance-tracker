@@ -5,8 +5,6 @@ import Entrance from "../types/Entrance";
 import Entrances from "../../entrances.json";
 
 class Locations {
-    public static all: LocationNode[]
-    public static spawn: LocationNode
     public static entrances: MappedLocation[] = this.LoadEntrances()
 
     private static LoadEntrances(): MappedLocation[] {
@@ -14,16 +12,16 @@ class Locations {
         return Entrances as MappedLocation[]
     }
 
-    public static LoadDefault(): void {
-        this.all = this.entrances.map((location: MappedLocation): LocationNode => ({ name: location.name, connections: [] }))
+    public static GetDefault(): LocationNode[] {
+        return this.entrances.map((location: MappedLocation): LocationNode => ({ name: location.name, connections: [] }))
     }
 
     public static Find(name: string): LocationNode | null {
-        return this.all.find((location: LocationNode): boolean => location.name.toLowerCase() === name.toLowerCase()) ?? null
+        return this.GetDefault().find((location: LocationNode): boolean => location.name.toLowerCase() === name.toLowerCase()) ?? null
     }
 
     public static FindStrict(name: string): LocationNode | null {
-        return this.all.find((location: LocationNode): boolean => location.name === name) ?? null
+        return this.GetDefault().find((location: LocationNode): boolean => location.name === name) ?? null
     }
 
     public static GetEntrances(location: LocationNode): MappedEntrance[] | null {

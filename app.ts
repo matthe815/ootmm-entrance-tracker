@@ -135,14 +135,14 @@ function handlePath(): void {
 }
 
 function handleList(): void {
-    if (Saves.IsFileLoaded()) {
+    if (!Saves.current || !Saves.IsFileLoaded()) {
         console.error(chalk.red('You must select a file before you can do this.'))
         CreateCommandLine()
         return
     }
 
     let location: LocationNode
-    for (location of Locations.all) {
+    for (location of Saves.current.locations) {
         if (location.connections.length === 0) continue
 
         console.log(`${location.name}`)
@@ -153,9 +153,12 @@ function handleList(): void {
 
 function handleLoad(): void {
     ConsoleInput.GetGameInput()
-        .then((locations: LocationNode[]): void => {
-            let totalLocations: number = locations.length
-            let totalEntrances: number = locations.map((l: LocationNode) => l.connections.length).reduce((previous: number, current: number) => previous + current)
+        .then((): void => {
+            const save = Saves.current
+            if (!save) return
+
+            let totalLocations: number = save.locations.length
+            let totalEntrances: number = save.locations.map((l: LocationNode) => l.connections.length).reduce((previous: number, current: number) => previous + current)
             console.log(`Successfully loaded save with ${totalLocations} and ${totalEntrances} entrances.`)
             CreateCommandLine()
         })
@@ -178,16 +181,14 @@ function handleJoin(): void {
                 return
             }
 
-            Locations.all = []
-            Locations.LoadDefault()
-            Saves.CURRENT_UUID = input
+            Saves.Create(input)
             RequestUpdate()
             CreateCommandLine()
         })
 }
 
 function areaAutoCompleter(line: string): [string[], string] {
-    const hits: string[] = Locations.all.filter((location: LocationNode) => location.name.startsWith(line)).map((location: LocationNode) => location.name)
+    const hits: string[] = Locations.GetDefault().filter((location: LocationNode) => location.name.startsWith(line)).map((location: LocationNode) => location.name)
     return [hits.length > 0 ? hits : [], line]
 }
 

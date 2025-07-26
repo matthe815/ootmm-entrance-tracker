@@ -15,7 +15,6 @@ export function getSave(uuid: string): any {
 const server: Server = net.createServer((socket: Socket) => {
     let dataBuffer: Buffer = Buffer.alloc(0);
     socket.on('data', (chunk) => {
-        console.log(chunk)
         const op: number = chunk[0]
         const uuid: string = String(chunk[1]) + String(chunk[2]) + String(chunk[3])
         const save = getSave(uuid)
@@ -24,7 +23,7 @@ const server: Server = net.createServer((socket: Socket) => {
 
         switch (op) {
             case 1:
-                let splitIndex: number = 5;
+                let splitIndex: number = 4;
                 while ((splitIndex = dataBuffer.indexOf(0x00)) !== -1) {
                     const chunk: Buffer = dataBuffer.slice(0, splitIndex);
                     dataBuffer = dataBuffer.slice(splitIndex + 1);

@@ -170,8 +170,7 @@ class NetSerializer {
             offset += chunk.length
         }
 
-        buffer.set(Uint8Array.from([op]), 0)
-        buffer.set(Uint8Array.from([new TextEncoder().encode(Saves.CURRENT_UUID)]))
+        buffer.set(Uint8Array.from([op, ...SerializeStringToHex(Saves.CURRENT_UUID)]), 0)
         return buffer
     }
 }
@@ -193,8 +192,20 @@ export function SerializeLocationArray(locations: LocationNode[]): Uint8Array {
     return NetSerializer.WriteChunksToBuffer(0x01, chunks)
 }
 
+export function SerializeStringToHex(hexString: string): Uint8Array {
+    const array: Uint8Array = new Uint8Array(hexString.length / 2);
+
+    let i: number
+    for (i = 0; i < hexString.length; i += 2) {
+        array[i / 2] = parseInt(hexString.substr(i, 2), 16);
+    }
+
+    return array;
+}
+
 export function RequestUpdate(): void {
-    const buffer = Buffer.from(Uint8Array.from([0x02]))
+    if (!Saves.CURRENT_UUID) return
+    const buffer: Buffer = Buffer.from(Uint8Array.from([0x02, ...SerializeStringToHex(Saves.CURRENT_UUID)]))
     serverConnection.write(buffer)
 }
 

@@ -304,4 +304,5 @@ function handleCommand(line: string) {
     command.executor()
 }
 
+console.log(`Make use of \`${ConsoleInput.command('join')}\` or \`${ConsoleInput.command('load')}\` to start with this tool`)
 CreateCommandLine()

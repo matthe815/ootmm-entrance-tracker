@@ -12,16 +12,19 @@ const SAVE_DIRECTORY: string = path.resolve("saves")
 
 type SerializedSave = {
     uuid: string
+    spawn: string
     locations: SerializedLocation[]
 }
 
 class Save {
     public uuid: string
     public locations: LocationNode[]
+    public spawn: LocationNode
 
-    constructor(uuid: string, locations: LocationNode[]) {
+    constructor(uuid: string, spawn: string, locations: LocationNode[]) {
         this.uuid = uuid
         this.locations = locations
+        this.spawn = this.Get(spawn) ?? this.locations[0]
     }
 
     public Get(name: string): LocationNode | null {
@@ -51,12 +54,13 @@ class Save {
     }
 
     public GetSpawn(): LocationNode {
-        return this.locations[0]
+        return this.spawn
     }
 
     public Serialize(): SerializedSave {
         return {
             uuid: this.uuid,
+            spawn: this.GetSpawn().name,
             locations: this.locations.map((location: LocationNode): SerializedLocation => ({
                 name: location.name,
                 entrances: location.connections.map((entrance: Entrance) => ({ name: entrance.name, location: entrance.location.name }))
@@ -83,7 +87,7 @@ class Saves {
 
     public static Create(uuid?: string): string {
         if (!uuid) uuid = crypto.pseudoRandomBytes(3).toString('hex')
-        this.current = new Save(uuid, Locations.GetDefault())
+        this.current = new Save(uuid, "Kokiri Forest", Locations.GetDefault())
 
         Saves.Save()
         console.log(`Created new entrance randomizer game instance with UUID of ${uuid}.`)
@@ -108,7 +112,7 @@ class Saves {
         if (!fs.existsSync(filePath)) return false
 
         const parsedSave = JSON.parse(String(fs.readFileSync(filePath)))
-        this.current = new Save(uuid, Locations.GetDefault())
+        this.current = new Save(uuid, parsedSave.spawn ?? "Kokiri Forest", Locations.GetDefault())
 
         if (Array.isArray(parsedSave)) {
             this.current.AddGroup(parsedSave)

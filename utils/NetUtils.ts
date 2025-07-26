@@ -216,19 +216,21 @@ export function UpdateGroup(nodes: LocationNode[]): void {
 }
 
 function ProcessSendQueue(queue: any[][]) {
-    let interval: NodeJS.Timeout
+    if (queue.length === 0) {
+        RequestUpdate()
+        return
+    }
+
     queue = queue.reverse()
-    interval = setInterval(() => {
-        if (queue.length === 0) {
-            clearInterval(interval)
-            RequestUpdate()
-        }
 
-        let packet = queue.pop()
-        if (!packet) return
+    const packet = queue.pop()
+    if (!packet) return
+    UpdateGroup(packet)
 
-        UpdateGroup(packet)
-    }, 1000)
+    serverConnection.once("data", (chunk): void => {
+        const op: number = chunk[0]
+        if (op === 3) ProcessSendQueue(queue)
+    })
 }
 
 

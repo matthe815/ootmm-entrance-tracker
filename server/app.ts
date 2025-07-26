@@ -56,6 +56,7 @@ const server: Server = net.createServer((socket: Socket) => {
                 }
 
                 writeFileSync(path.resolve(SAVE_LOCATION, `${uuid}.json`), JSON.stringify(save))
+                socket.write(Uint8Array.from([0x3]))
                 break
             case 2:
                 console.log('Sending save update by request of client')

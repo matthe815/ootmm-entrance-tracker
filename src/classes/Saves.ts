@@ -8,9 +8,10 @@ import Entrance from "../types/Entrance";
 import {MappedLocation} from "../types/LocationMapping";
 import ConsoleInput from "./ConsoleInput";
 
-const SAVE_LOCATION = path.resolve("saves", "save.json")
-
 class Saves {
+    public static SAVE_LOCATION: string = path.resolve("saves")
+    public static CURRENT_UUID?: string | null = null
+
     public static GetSaveMD5(): string {
         return crypto.createHash('md5')
             .update(JSON.stringify(this.Serialize()))
@@ -40,14 +41,26 @@ class Saves {
                 area.connections.push({ name: entrance.name, location: target })
             }
         }
+    }
 
-        console.log('Successfully loaded previous save.')
+    public static Create(): string {
+        let uuid: string = crypto.pseudoRandomBytes(3).toString('hex')
+        this.CURRENT_UUID = uuid
+        Locations.LoadDefault()
+
+        Saves.Save()
+        console.log(`Created new entrance randomizer game instance with UUID of ${uuid}.`)
+
+        return uuid
     }
 
     public static Save(): void {
-        if (!fs.existsSync(path.dirname(SAVE_LOCATION))) fs.mkdirSync(path.dirname(SAVE_LOCATION), { recursive: true });
+        if (!fs.existsSync(path.dirname(this.SAVE_LOCATION))) {
+            fs.mkdirSync(path.dirname(this.SAVE_LOCATION), { recursive: true });
+        }
+
         const save: SerializedLocation[] = Saves.Serialize()
-        fs.writeFileSync(SAVE_LOCATION, JSON.stringify(save))
+        fs.writeFileSync(path.resolve(this.SAVE_LOCATION, `${this.CURRENT_UUID}.json`), JSON.stringify(save))
         console.log('Tracker progress saved successfully.')
     }
 
@@ -60,12 +73,15 @@ class Saves {
         }
     }
 
-    public static Load(): void {
-        if (!fs.existsSync(SAVE_LOCATION)) Locations.LoadDefault()
-        else Saves.Deserialize(JSON.parse(String(fs.readFileSync(SAVE_LOCATION))))
+    public static Load(uuid: string): boolean {
+        let filePath: string = path.resolve(this.SAVE_LOCATION, `${uuid}.json`)
+        if (!fs.existsSync(filePath)) return false
+        Saves.Deserialize(JSON.parse(String(fs.readFileSync(filePath))))
         Saves.AddMissingLocations()
+        this.CURRENT_UUID = uuid
 
         Locations.spawn = Locations.all[0]
+        return true
     }
 }
 

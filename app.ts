@@ -133,6 +133,17 @@ function handleList(): void {
     CreateCommandLine()
 }
 
+function selectGame(): void {
+    ConsoleInput.GetGameInput()
+        .then((locations: LocationNode[]): void => {
+            let totalLocations: number = locations.length
+            let totalEntrances: number = locations.map((l: LocationNode) => l.connections.length).reduce((previous: number, current: number) => previous + current)
+            console.log(`Successfully loaded save with ${totalLocations} and ${totalEntrances} entrances.`)
+            CreateCommandLine()
+        })
+        .catch(() => selectGame())
+}
+
 function areaAutoCompleter(line: string): [string[], string] {
     const hits: string[] = Locations.all.filter((location: LocationNode) => location.name.startsWith(line)).map((location: LocationNode) => location.name)
     return [hits.length > 0 ? hits : [], line]
@@ -251,7 +262,7 @@ function handleCommand(line: string) {
 
     commandLine.close()
     if (!command) {
-        console.error(chalk.red(`Unknown command: ${command}`))
+        console.error(chalk.red(`Unknown command: ${line}`))
         CreateCommandLine()
         return
     }
@@ -259,5 +270,4 @@ function handleCommand(line: string) {
     command.executor()
 }
 
-Saves.Load()
-CreateCommandLine()
+selectGame()

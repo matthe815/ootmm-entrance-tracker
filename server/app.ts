@@ -1,21 +1,31 @@
 import {Server, Socket} from "net";
 import {deserializeLocation, UpdateAll} from "./NetUtils";
-import {existsSync, readFileSync, writeFileSync} from "fs";
+import fs, {existsSync, readFileSync, writeFileSync} from "fs";
 import path from "node:path";
 const net = require('net');
-export let serverSave: any[] = []
+
+const SAVE_LOCATION: string = path.resolve('server', 'saves')
+
+function getSave(uuid: string): any {
+    if (!fs.existsSync(SAVE_LOCATION)) fs.mkdirSync(SAVE_LOCATION)
+    if (!fs.existsSync(path.resolve(SAVE_LOCATION, uuid))) return []
+    return JSON.parse(String(fs.readFileSync(path.resolve(SAVE_LOCATION, `${uuid}.json`))))
+}
 
 const server: Server = net.createServer((socket: Socket) => {
-    let dataBuffer = Buffer.alloc(0);
+    let dataBuffer: Buffer = Buffer.alloc(0);
     socket.on('data', (chunk) => {
         const op: number = chunk[0]
-        dataBuffer = Buffer.concat([dataBuffer, chunk]).subarray(1);
+        const uuid: string = chunk[1] + chunk[2] + chunk[3]
+        const save = getSave(uuid)
+        console.log(uuid)
+        dataBuffer = Buffer.concat([dataBuffer, chunk]).subarray(4);
 
         switch (op) {
             case 1:
-                let splitIndex: number = 1;
+                let splitIndex: number = 5;
                 while ((splitIndex = dataBuffer.indexOf(0x00)) !== -1) {
-                    const chunk = dataBuffer.slice(0, splitIndex);
+                    const chunk: Buffer = dataBuffer.slice(0, splitIndex);
                     dataBuffer = dataBuffer.slice(splitIndex + 1);
 
                     if (chunk.length === 0) continue
@@ -24,7 +34,7 @@ const server: Server = net.createServer((socket: Socket) => {
                         const { location } = deserializeLocation(chunk);
 
                         let savedLoc: { name: string, entrances: { name: string, location: string }[] }
-                        if ((savedLoc = serverSave.find(l => l.name === location.name))) {
+                        if ((savedLoc = save.find(l => l.name === location.name))) {
                             let entrance: { name: string, location: string }
                             for (entrance of location.entrances) {
                                 if (savedLoc.entrances.find((e: { location: string, name: string }): boolean => e.name === entrance.name)) {
@@ -38,7 +48,7 @@ const server: Server = net.createServer((socket: Socket) => {
                             continue;
                         }
 
-                        serverSave.push(location);
+                        save.push(location);
                         console.log(`🆕 Stored new location: ${location.name}`);
                     } catch (err) {
                         console.error('Failed to parse location:', err);
@@ -52,7 +62,7 @@ const server: Server = net.createServer((socket: Socket) => {
                 break
         }
 
-        writeFileSync(path.resolve("save.json"), JSON.stringify(serverSave))
+        writeFileSync(path.resolve(SAVE_LOCATION, `${uuid}.json`), JSON.stringify(save))
         UpdateAll(socket)
     });
 
@@ -65,8 +75,7 @@ const server: Server = net.createServer((socket: Socket) => {
     });
 });
 
-const PORT = 13234;
-if (existsSync(path.resolve("save.json"))) serverSave = JSON.parse(String(readFileSync(path.resolve("save.json"))))
-server.listen(PORT, () => {
+const PORT: number = 13234;
+server.listen(PORT, (): void => {
     console.log(`TCP server listening on port ${PORT}`);
 });

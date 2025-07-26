@@ -160,16 +160,18 @@ class NetSerializer {
     }
 
     public static WriteChunksToBuffer(op: number, chunks: any[]): Uint8Array {
-        const totalLength = chunks.reduce((sum, arr) => sum + arr.length, 0) + 1
+        if (!Saves.CURRENT_UUID) return new Uint8Array(0)
+        const totalLength = chunks.reduce((sum, arr) => sum + arr.length, 0) + 4
         const buffer: Uint8Array = new Uint8Array(totalLength)
 
-        let offset: number = 1
+        let offset: number = 4
         for (const chunk of chunks) {
             buffer.set(chunk, offset)
             offset += chunk.length
         }
 
         buffer.set(Uint8Array.from([op]), 0)
+        buffer.set(Uint8Array.from([new TextEncoder().encode(Saves.CURRENT_UUID)]))
         return buffer
     }
 }

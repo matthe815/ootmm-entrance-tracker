@@ -3,6 +3,9 @@ import LocationNode from "../types/LocationNode";
 import Locations from "./Locations";
 import {MappedEntrance} from "../types/LocationMapping";
 import chalk from 'chalk';
+import fs from "fs";
+import Saves from "./Saves";
+import path from "node:path";
 
 class ConsoleInput {
     public static command = chalk.yellow
@@ -24,6 +27,43 @@ class ConsoleInput {
     public static StopInput(): void {
         if (!this.inputLine) return
         this.inputLine.close()
+    }
+
+    public static GetGameInput(completer?: (line: string) => [string[], string]): Promise<LocationNode[]> {
+        this.StartInput(completer)
+        return new Promise((resolve, reject): void => {
+            if (!this.inputLine) return
+
+            const files: string[] = fs.readdirSync(Saves.SAVE_LOCATION)
+            console.log('Select the saved game to load.')
+
+            let file: string, count: number = 1
+            for (file of files) {
+                console.log(`(${count}) - ${file.split(".")[0]}`)
+                count++
+            }
+            console.log(`(${count}) - New Game`)
+
+            this.inputLine.on("line", (input: string): void => {
+                let inputtedNumber: number = parseInt(input)
+                if (inputtedNumber === count) {
+                    ConsoleInput.StopInput()
+                    Saves.Create()
+                    resolve(Locations.all)
+                    return
+                }
+
+                let uuid: string = files[inputtedNumber - 1].split(".")[0]
+                if (!Saves.Load(uuid)) {
+                    console.error(chalk.red('The save requested to be loaded is invalid.'))
+                    reject()
+                    return
+                }
+
+                ConsoleInput.StopInput()
+                resolve(Locations.all)
+            })
+        })
     }
 
     public static GetAreaInput(completer?: (line: string) => [string[], string]): Promise<LocationNode> {

@@ -15,6 +15,7 @@ export function getSave(uuid: string): any {
 const server: Server = net.createServer((socket: Socket) => {
     let dataBuffer: Buffer = Buffer.alloc(0);
     socket.on('data', (chunk) => {
+        console.log(chunk)
         const op: number = chunk[0]
         const uuid: string = String(chunk[1]) + String(chunk[2]) + String(chunk[3])
         const save = getSave(uuid)
@@ -55,15 +56,13 @@ const server: Server = net.createServer((socket: Socket) => {
                     }
                 }
 
+                writeFileSync(path.resolve(SAVE_LOCATION, `${uuid}.json`), JSON.stringify(save))
                 break
             case 2:
                 console.log('Sending save update by request of client')
                 UpdateAll(socket, uuid)
                 break
         }
-
-        writeFileSync(path.resolve(SAVE_LOCATION, `${uuid}.json`), JSON.stringify(save))
-        UpdateAll(socket, uuid)
     });
 
     socket.on('end', () => {

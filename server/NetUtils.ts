@@ -1,6 +1,6 @@
 import {Socket} from "net";
 import {getSave} from "./app";
-import {RequestUpdate} from "../utils/NetUtils";
+import LocationNode from "../src/types/LocationNode";
 
 function readString(buf: Buffer, offset: number) {
     const length: number = buf[offset];
@@ -99,7 +99,6 @@ export function UpdateGroup(nodes: LocationNode[], socket: Socket): void {
 
 function ProcessSendQueue(queue: any[][], socket: Socket) {
     if (queue.length === 0) {
-        RequestUpdate()
         return
     }
 

@@ -83,6 +83,12 @@ function FindPathToTarget(start: LocationNode, target: LocationNode): PathStep[]
 }
 
 function handleLink(): void {
+    if (Saves.IsFileLoaded()) {
+        console.error(chalk.red('You must select a file before you can do this.'))
+        CreateCommandLine()
+        return
+    }
+    
     console.log('Enter the initial area name.')
     ConsoleInput.GetAreaInput(areaAutoCompleter).then((area: LocationNode): void => {
         console.log('Which exit must be taken?')
@@ -104,6 +110,12 @@ function handleLink(): void {
 }
 
 function handlePath(): void {
+    if (Saves.IsFileLoaded()) {
+        console.error(chalk.red('You must select a file before you can do this.'))
+        CreateCommandLine()
+        return
+    }
+
     console.log('Enter the name of the area for which you want a route to.')
     ConsoleInput.GetAreaInput(areaAutoCompleter).then((input: LocationNode): void => {
         console.log(`Choose the location to path from. Enter \`${ConsoleInput.command('spawn')}\` for ${ConsoleInput.location('Kokiri Forest')}`)
@@ -123,6 +135,12 @@ function handlePath(): void {
 }
 
 function handleList(): void {
+    if (Saves.IsFileLoaded()) {
+        console.error(chalk.red('You must select a file before you can do this.'))
+        CreateCommandLine()
+        return
+    }
+
     let location: LocationNode
     for (location of Locations.all) {
         if (location.connections.length === 0) continue

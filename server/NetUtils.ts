@@ -1,7 +1,7 @@
 import {Socket} from "net";
-import {serverSave} from "./app";
 import {clearInterval} from "timers";
 import LocationNode from "../src/types/LocationNode";
+import {getSave} from "./app";
 
 function readString(buf: Buffer, offset: number) {
     const length: number = buf[offset];
@@ -112,12 +112,12 @@ function ProcessSendQueue(queue: any[][], socket: Socket) {
 }
 
 
-export function UpdateAll(socket: Socket): void {
+export function UpdateAll(socket: Socket, uuid: string): void {
     let sendQueue: any[][] = []
     let locationQueue: LocationNode[] = []
 
     let location: LocationNode
-    for (location of serverSave) {
+    for (location of getSave(uuid)) {
         locationQueue.push(location)
         if (locationQueue.length >= 8) {
             sendQueue.push([...locationQueue])

@@ -1,12 +1,12 @@
 import {Server, Socket} from "net";
 import {deserializeLocation, UpdateAll} from "./NetUtils";
-import fs, {existsSync, readFileSync, writeFileSync} from "fs";
+import fs, {writeFileSync} from "fs";
 import path from "node:path";
 const net = require('net');
 
 const SAVE_LOCATION: string = path.resolve('server', 'saves')
 
-function getSave(uuid: string): any {
+export function getSave(uuid: string): any {
     if (!fs.existsSync(SAVE_LOCATION)) fs.mkdirSync(SAVE_LOCATION)
     if (!fs.existsSync(path.resolve(SAVE_LOCATION, uuid))) return []
     return JSON.parse(String(fs.readFileSync(path.resolve(SAVE_LOCATION, `${uuid}.json`))))
@@ -58,12 +58,12 @@ const server: Server = net.createServer((socket: Socket) => {
                 break
             case 2:
                 console.log('Sending save update by request of client')
-                UpdateAll(socket)
+                UpdateAll(socket, uuid)
                 break
         }
 
         writeFileSync(path.resolve(SAVE_LOCATION, `${uuid}.json`), JSON.stringify(save))
-        UpdateAll(socket)
+        UpdateAll(socket, uuid)
     });
 
     socket.on('end', () => {

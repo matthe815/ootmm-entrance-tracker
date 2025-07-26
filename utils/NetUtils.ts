@@ -9,7 +9,7 @@ import path from "node:path";
 import {existsSync, readFileSync, writeFileSync} from "fs";
 import chalk from "chalk";
 import Saves from "../src/classes/Saves";
-import {clearInterval} from "timers";
+import {clearInterval, clearTimeout} from "timers";
 
 let serverConnection: Socket
 
@@ -35,15 +35,15 @@ export function AddConnectionHistory(host: string): void {
 
 function HandleServerPacket(chunk: Buffer): void {
     const op: number = chunk[0]
-    let dataBuffer = Buffer.alloc(0);
+    let dataBuffer: Buffer = Buffer.alloc(0);
     dataBuffer = Buffer.concat([dataBuffer, chunk]).subarray(1);
 
     switch (op) {
         case 1:
-            let updated = false
+            let updated: boolean = false
             let splitIndex: number = 1;
             while ((splitIndex = dataBuffer.indexOf(0x00)) !== -1) {
-                const chunk = dataBuffer.slice(0, splitIndex);
+                const chunk: Buffer = dataBuffer.slice(0, splitIndex);
                 dataBuffer = dataBuffer.slice(splitIndex + 1);
 
                 if (chunk.length === 0) continue
@@ -210,48 +210,75 @@ export function RequestUpdate(): void {
     serverConnection.write(buffer)
 }
 
-export function UpdateGroup(nodes: LocationNode[]): void {
-    if (!serverConnection) return
-    const buffer: Uint8Array = Buffer.from(SerializeLocationArray(nodes))
-    serverConnection.write(buffer)
-}
+export function UpdateGroup(nodes: LocationNode[]): Promise<void> {
+    return new Promise((resolve, reject): void => {
+        if (!IsConnectedToServer()) {
+            reject('You are not currently connected to a sync server.')
+            return
+        }
 
-function ProcessSendQueue(queue: any[][]) {
-    if (queue.length === 0) {
-        RequestUpdate()
-        return
-    }
-
-    queue = queue.reverse()
-
-    const packet = queue.pop()
-    if (!packet) return
-    UpdateGroup(packet)
-
-    serverConnection.once("data", (chunk): void => {
-        const op: number = chunk[0]
-        if (op === 3) ProcessSendQueue(queue)
+        SendPacket(Buffer.from(SerializeLocationArray(nodes)))
+            .then(() => resolve())
+            .catch((e) => console.error(chalk.red(e)))
     })
 }
 
+function SendPacket(packet: Buffer): Promise<void> {
+    return new Promise((resolve, reject): void => {
+        serverConnection.write(packet)
 
-export function UpdateAll(): void {
-    if (!IsConnectedToServer()) {
-        console.error(chalk.red('You are not currently connected to a sync server.'))
-        return
-    }
+        let timeout: NodeJS.Timeout
 
-    let sendQueue: any[][] = []
-    let locationQueue: LocationNode[] = []
-
-    let location: LocationNode
-    for (location of Locations.all) {
-        locationQueue.push(location)
-        if (locationQueue.length >= 8) {
-            sendQueue.push([...locationQueue])
-            locationQueue = []
+        const handleAck = (chunk: Buffer): void => {
+            clearTimeout(timeout)
+            const op: number = chunk[0]
+            if (op !== 3) {
+                reject()
+                return
+            }
+            resolve()
         }
+
+        const autoTimeout = (): void => {
+            serverConnection.off("data", handleAck)
+            reject()
+        }
+
+        timeout = setTimeout(autoTimeout, 3000)
+        serverConnection.once("data", handleAck)
+    })
+}
+
+async function SendQueue(queue: any[][]): Promise<void> {
+    let packet: any[]
+    for (packet of queue) {
+        await UpdateGroup(packet)
     }
-    sendQueue.push([...locationQueue])
-    ProcessSendQueue(sendQueue)
+}
+
+
+export function UpdateAll(): Promise<void> {
+    return new Promise((resolve, reject): void => {
+        if (!IsConnectedToServer()) {
+            reject('You are not currently connected to a sync server.')
+            return
+        }
+
+        let sendQueue: any[][] = []
+        let locationQueue: LocationNode[] = []
+
+        let location: LocationNode
+        for (location of Locations.all) {
+            locationQueue.push(location)
+            if (locationQueue.length >= 8) {
+                sendQueue.push([...locationQueue])
+                locationQueue = []
+            }
+        }
+        sendQueue.push([...locationQueue])
+
+        SendQueue(sendQueue)
+            .then((): void => resolve())
+            .catch((e) => reject(e))
+    })
 }

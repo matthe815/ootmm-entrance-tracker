@@ -88,7 +88,7 @@ function handleLink(): void {
         CreateCommandLine()
         return
     }
-    
+
     console.log('Enter the initial area name.')
     ConsoleInput.GetAreaInput(areaAutoCompleter).then((area: LocationNode): void => {
         console.log('Which exit must be taken?')
@@ -286,7 +286,11 @@ const commands: Command[] = [
         executor: () => {
             console.log('Syncing local server and remote save')
             UpdateAll()
-            CreateCommandLine()
+                .then(() => {
+                    RequestUpdate()
+                    CreateCommandLine()
+                })
+                .catch((e) => console.error(chalk.red(e)))
         }
     },
     {

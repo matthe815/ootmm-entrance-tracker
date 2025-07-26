@@ -76,6 +76,7 @@ function HandleServerPacket(chunk: Buffer): void {
                 }
             }
             if (updated) Saves.Save()
+            serverConnection.write(Uint8Array.from([0x3]))
             break
     }
 }

@@ -2,6 +2,7 @@ import {Socket} from "net";
 import {clearInterval} from "timers";
 import LocationNode from "../src/types/LocationNode";
 import {getSave} from "./app";
+import {RequestUpdate} from "../utils/NetUtils";
 
 function readString(buf: Buffer, offset: number) {
     const length: number = buf[offset];
@@ -99,17 +100,23 @@ export function UpdateGroup(nodes: LocationNode[], socket: Socket): void {
 }
 
 function ProcessSendQueue(queue: any[][], socket: Socket) {
-    let interval: NodeJS.Timeout
+    if (queue.length === 0) {
+        RequestUpdate()
+        return
+    }
+
     queue = queue.reverse()
-    interval = setInterval(() => {
-        if (queue.length === 0) clearInterval(interval)
 
-        let packet = queue.pop()
-        if (!packet) return
+    const packet = queue.pop()
+    if (!packet) return
+    UpdateGroup(packet, socket)
 
-        UpdateGroup(packet, socket)
-    }, 1000)
+    socket.once("data", (chunk): void => {
+        const op: number = chunk[0]
+        if (op === 3) ProcessSendQueue(queue, socket)
+    })
 }
+
 
 
 export function UpdateAll(socket: Socket, uuid: string): void {

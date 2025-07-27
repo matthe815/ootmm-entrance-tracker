@@ -1,11 +1,12 @@
 import {IsConnectedToServer, RequestUpdate} from "../../utils/NetUtils";
 import ConsoleInput from "../classes/ConsoleInput";
 import Saves from "../classes/Saves";
+import CommandHandler from "../classes/CommandHandler";
 
 export default function CommandJoin(): void {
     if (!IsConnectedToServer()) {
         ConsoleInput.Error('ERROR_CONNECTION')
-        ConsoleInput.StartCommandLine()
+        CommandHandler.Spawn()
         return
     }
 
@@ -20,6 +21,6 @@ export default function CommandJoin(): void {
 
             Saves.Create(input)
             RequestUpdate()
-            ConsoleInput.StartCommandLine()
+            CommandHandler.Spawn()
         })
 }

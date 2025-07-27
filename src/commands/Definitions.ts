@@ -11,6 +11,7 @@ import {IsConnectedToServer, RequestUpdate, UpdateAll} from "../../utils/NetUtil
 import chalk from "chalk";
 import Locations from "../classes/Locations";
 import fs from "fs";
+import CommandHandler from "../classes/CommandHandler";
 
 export const commands: Command[] = [
     {
@@ -21,7 +22,7 @@ export const commands: Command[] = [
             for (command of commands) {
                 console.log(`(${command.name}) - ${command.help_text}`)
             }
-            ConsoleInput.StartCommandLine()
+            CommandHandler.Spawn()
         }
     },
     {
@@ -65,13 +66,13 @@ export const commands: Command[] = [
         executor: (): void => {
             if (!Saves.IsFileLoaded()) {
                 ConsoleInput.Error('ERROR_SELECT_FILE')
-                ConsoleInput.StartCommandLine()
+                CommandHandler.Spawn()
                 return
             }
 
             if (!IsConnectedToServer() ){
                 ConsoleInput.Error('ERROR_CONNECTION')
-                ConsoleInput.StartCommandLine()
+                CommandHandler.Spawn()
                 return
             }
 
@@ -79,11 +80,11 @@ export const commands: Command[] = [
             UpdateAll()
                 .then((): void => {
                     RequestUpdate()
-                    ConsoleInput.StartCommandLine()
+                    CommandHandler.Spawn()
                 })
                 .catch((e): void => {
                     console.error(chalk.red(e))
-                    ConsoleInput.StartCommandLine()
+                    CommandHandler.Spawn()
                 })
         }
     },
@@ -94,7 +95,7 @@ export const commands: Command[] = [
             console.log('Entrance file has been refreshed.')
             Locations.entrances = JSON.parse(String(fs.readFileSync("entrances.json")))
             Saves.AddMissingLocations()
-            ConsoleInput.StartCommandLine()
+            CommandHandler.Spawn()
         }
     },
     {

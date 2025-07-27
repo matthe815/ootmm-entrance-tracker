@@ -6,11 +6,12 @@ import AreaCompleter from "./completers/AreaCompleter";
 import Entrance from "../types/Entrance";
 import {MappedEntrance} from "../types/LocationMapping";
 import Locations from "../classes/Locations";
+import CommandHandler from "../classes/CommandHandler";
 
 export default function CommandPath(): void {
     if (!Saves.IsFileLoaded()) {
         ConsoleInput.Error('ERROR_SELECT_FILE')
-        ConsoleInput.StartCommandLine()
+        CommandHandler.Spawn()
         return
     }
 
@@ -27,7 +28,7 @@ export default function CommandPath(): void {
             } else {
                 ConsoleInput.Error('ERROR_PATH', [ConsoleInput.location(current.name), ConsoleInput.location(area.name)])
             }
-            ConsoleInput.StartCommandLine()
+            CommandHandler.Spawn()
         })
     })
 }

@@ -1,6 +1,7 @@
 import ConnectionHistory from "../classes/ConnectionHistory";
 import ConsoleInput from "../classes/ConsoleInput";
 import {ConnectToServer, ParseConnectionPlaceholders} from "../../utils/NetUtils";
+import CommandHandler from "../classes/CommandHandler";
 
 export default function CommandConnect(): void {
     const connectAutoCompleter = (line: string): [string[], string] => {
@@ -23,10 +24,10 @@ export default function CommandConnect(): void {
         ConsoleInput.Log('ATTEMPT_CONNECTION', [ConsoleInput.network(input)])
 
         ConnectToServer(input)
-            .then(ConsoleInput.StartCommandLine)
+            .then(CommandHandler.Spawn)
             .catch((): void => {
                 ConsoleInput.Error('CONNECTION_FAILURE')
-                ConsoleInput.StartCommandLine()
+                CommandHandler.Spawn()
             })
     })
 }

@@ -1,5 +1,6 @@
 import {DisconnectFromServer, IsConnectedToServer} from "../../utils/NetUtils";
 import ConsoleInput from "../classes/ConsoleInput";
+import CommandHandler from "../classes/CommandHandler";
 
 export default function CommandDisconnect(): void {
     if (!IsConnectedToServer()) {
@@ -9,5 +10,5 @@ export default function CommandDisconnect(): void {
 
     DisconnectFromServer()
     ConsoleInput.Log('DISCONNECTED')
-    ConsoleInput.StartCommandLine()
+    CommandHandler.Spawn()
 }

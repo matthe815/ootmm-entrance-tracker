@@ -2,6 +2,7 @@ import ConsoleInput from "../classes/ConsoleInput";
 import Saves, {Save} from "../classes/Saves";
 import chalk from "chalk";
 import LocationNode from "../types/LocationNode";
+import CommandHandler from "../classes/CommandHandler";
 
 export default function CommandLoad(): void {
     ConsoleInput.Log("SELECT_SAVE")
@@ -19,7 +20,7 @@ export default function CommandLoad(): void {
                     let totalLocations: number = save.locations.length
                     let totalEntrances: number = save.locations.map((l: LocationNode) => l.connections.length).reduce((previous: number, current: number) => previous + current)
                     ConsoleInput.Log('SUCCESS_LOAD', [String(totalLocations), String(totalEntrances)])
-                    ConsoleInput.StartCommandLine()
+                    CommandHandler.Spawn()
                 })
                 .catch((e): void => {
                     console.error(chalk.red(e))

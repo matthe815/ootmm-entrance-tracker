@@ -6,13 +6,14 @@ import Locations from "../classes/Locations";
 import Entrance from "../types/Entrance";
 import EntranceLinks from "../classes/EntranceLinks";
 import AreaCompleter from "./completers/AreaCompleter";
+import CommandHandler from "../classes/CommandHandler";
 
 export default function CommandLink(): void {
     const entranceMapper = (e: MappedEntrance, index: number): string => `(${index + 1}) ${ConsoleInput.location(e.name)}`
 
     if (!Saves.IsFileLoaded()) {
         ConsoleInput.Error('ERROR_SELECT_FILE')
-        ConsoleInput.StartCommandLine()
+        CommandHandler.Spawn()
         return
     }
 
@@ -29,7 +30,7 @@ export default function CommandLink(): void {
                     const entrance: Entrance = { name: connectionEntrance.name, location: area }
                     const connector: Entrance = { name: exit.name, location: connection }
                     EntranceLinks.Add(entrance, connector)
-                    ConsoleInput.StartCommandLine()
+                    CommandHandler.Spawn()
                 })
             })
         })

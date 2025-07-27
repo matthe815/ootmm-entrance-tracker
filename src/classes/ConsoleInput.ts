@@ -91,7 +91,7 @@ class ConsoleInput {
 
     public static GetAreaInput(completer?: (line: string) => [string[], string]): Promise<LocationNode> {
         this.StartInput(completer)
-        return new Promise((resolve) => {
+        return new Promise((resolve): void => {
             if (!this.inputLine) return
 
             this.inputLine.on("line", (input: string): void => {

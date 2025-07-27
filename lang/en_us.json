@@ -4,6 +4,10 @@
  "STORE_LOCATION": "Stored new entrance: ${location.name} (${entrance.name})",
  "PREVIOUS_ADDRESSES": "Listed below are the servers you've connected to in the past. You may use tab completion.",
  "ATTEMPT_CONNECTION": "Attempting connection to server at %s:13234...",
+ "LOCATION_ADDED": "Added missing location `%s` to your save.",
+ "GAME_CREATED": "Created new entrance tracker save with UUID of %s.",
+ "GAME_SAVED": "Successfully saved tracker progress.",
+ "UPDATE_SAVED": "Successfully converted v1 save to a valid v2 save. Saving now.",
 
  "SUCCESS_PATH": "Found the shortest path to %s.",
  "SUCCESS_LOAD": "Successfully loaded save with %s locations and %s entrances.",

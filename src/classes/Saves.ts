@@ -89,7 +89,7 @@ class Saves {
         let location: MappedLocation
         for (location of Locations.entrances) {
             if (Locations.GetDefault().find((l: LocationNode): boolean => l.name === location.name)) continue
-            console.log(`Added missing location \`${ConsoleInput.location(location.name)}\` to local save.`)
+            ConsoleInput.Log('LOCATION_ADDED', [ConsoleInput.location(location.name)])
             Locations.GetDefault().push({ name: location.name, connections: [] })
         }
     }
@@ -99,7 +99,7 @@ class Saves {
         this.current = new Save(uuid, Locations.GetDefault())
 
         Saves.Save()
-        console.log(`Created new entrance randomizer game instance with UUID of ${uuid}.`)
+        ConsoleInput.Log('GAME_CREATED', [uuid])
 
         return uuid
     }
@@ -113,7 +113,7 @@ class Saves {
 
         const save: SerializedSave = this.current.Serialize()
         fs.writeFileSync(path.resolve(SAVE_DIRECTORY, `${this.current.uuid}.json`), JSON.stringify(save))
-        console.log('Tracker progress saved successfully.')
+        ConsoleInput.Log('GAME_SAVED')
     }
 
     public static Load(uuid: string): Promise<void> {
@@ -130,7 +130,7 @@ class Saves {
 
             if (Array.isArray(parsedSave)) {
                 this.current.AddGroup(parsedSave)
-                console.log('Successfully converted v1 save to a valid v2 save - overwriting file.')
+                ConsoleInput.Log('UPDATE_SAVED')
                 Saves.Save()
                 resolve()
             }

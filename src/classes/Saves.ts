@@ -18,7 +18,7 @@ type SerializedSave = {
     locations: SerializedLocation[]
 }
 
-class Save {
+export class Save {
     public uuid: string
     public locations: LocationNode[]
     public spawn: LocationNode
@@ -79,7 +79,7 @@ class Save {
 }
 
 class Saves {
-    public static current?: Save | null = null
+    public static current: Save | null = null
 
     public static IsFileLoaded(): boolean {
         return this.current !== null
@@ -116,30 +116,39 @@ class Saves {
         console.log('Tracker progress saved successfully.')
     }
 
-    public static Load(uuid: string): boolean {
-        let filePath: string = path.resolve(SAVE_DIRECTORY, `${uuid}.json`)
-        if (!fs.existsSync(filePath)) return false
+    public static Load(uuid: string): Promise<boolean> {
+        return new Promise((resolve, reject): void => {
+            let filePath: string = path.resolve(SAVE_DIRECTORY, `${uuid}.json`)
+            if (!fs.existsSync(filePath)) {
+                reject()
+                return
+            }
 
-        const parsedSave = JSON.parse(String(fs.readFileSync(filePath)))
-        this.current = new Save(uuid, Locations.GetDefault())
-        this.current.Fill(parsedSave)
+            const parsedSave = JSON.parse(String(fs.readFileSync(filePath)))
+            this.current = new Save(uuid, Locations.GetDefault())
+            this.current.Fill(parsedSave)
 
-        if (Array.isArray(parsedSave)) {
-            this.current.AddGroup(parsedSave)
-            console.log('Successfully converted v1 save to a valid v2 save - overwriting file.')
-            Saves.Save()
-            return true
-        }
+            if (Array.isArray(parsedSave)) {
+                this.current.AddGroup(parsedSave)
+                console.log('Successfully converted v1 save to a valid v2 save - overwriting file.')
+                Saves.Save()
+                resolve()
+            }
 
-        this.current.AddGroup(parsedSave.locations)
+            this.current.AddGroup(parsedSave.locations)
 
-        if (this.current.connection) {
-            ConnectToServer(this.current.connection)
-                .then(() => UpdateAll())
-                .catch(() => ConsoleInput.Error('ERROR_CONNECT'))
-        }
+            if (this.current.connection) {
+                ConnectToServer(this.current.connection)
+                    .then((): void => {
+                        UpdateAll().then(() => resolve())
+                    })
+                    .catch(() => ConsoleInput.Error('ERROR_CONNECT'))
 
-        return true
+                return
+            }
+
+            resolve(0)
+        })
     }
 
     public static GetAll(): string[] {

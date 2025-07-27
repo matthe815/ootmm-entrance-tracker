@@ -8,6 +8,7 @@
  "GAME_CREATED": "Created new entrance tracker save with UUID of %s.",
  "GAME_SAVED": "Successfully saved tracker progress.",
  "UPDATE_SAVED": "Successfully converted v1 save to a valid v2 save. Saving now.",
+ "SELECT_SAVE": "Select a file to load.",
 
  "SUCCESS_PATH": "Found the shortest path to %s.",
  "SUCCESS_LOAD": "Successfully loaded save with %s locations and %s entrances.",
@@ -31,5 +32,7 @@
  "ERROR_CONNECTION": "You must be connected to a sync server before you may do this.",
  "ERROR_UUID": "The UUID `%s` is not of a valid format. The UUID is a 6 letter or digit string.",
  "ERROR_LOCATION": "Failed to parse location",
- "ERROR_PATH": "Could not find any path to %s from %s. This usually means you're missing a linking area."
+ "ERROR_PATH": "Could not find any path to %s from %s. This usually means you're missing a linking area.",
+ "ERROR_LENGTH": "There is no save file at index `%s`.",
+ "ERROR_FORMAT": "The value you have provided is not valid."
 }

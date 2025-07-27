@@ -154,15 +154,26 @@ function handleList(): void {
 }
 
 function handleLoad(): void {
-    ConsoleInput.GetGameInput()
-        .then((): void => {
-            const save: Save | null = Saves.current
-            if (!save) return
+    ConsoleInput.Log("SELECT_SAVE")
 
-            let totalLocations: number = save.locations.length
-            let totalEntrances: number = save.locations.map((l: LocationNode) => l.connections.length).reduce((previous: number, current: number) => previous + current)
-            ConsoleInput.Log('SUCCESS_LOAD', [String(totalLocations), String(totalEntrances)])
-            CreateCommandLine()
+    const saves: string[] = Saves.GetAll()
+    saves.forEach((save: string, index: number): void => {
+        console.log(`(${index}) ${chalk.bold(save.split(".")[0])}`)
+    })
+    console.log(`(${saves.length}) New Game`)
+
+    ConsoleInput.GetGameInput()
+        .then((file: number): void => {
+            Saves.Load(saves[file].split(".")[0])
+                .then((save: Save): void => {
+                    let totalLocations: number = save.locations.length
+                    let totalEntrances: number = save.locations.map((l: LocationNode) => l.connections.length).reduce((previous: number, current: number) => previous + current)
+                    ConsoleInput.Log('SUCCESS_LOAD', [String(totalLocations), String(totalEntrances)])
+                    CreateCommandLine()
+                })
+                .catch((e): void => {
+                    console.error(chalk.red(e))
+                })
         })
         .catch(() => handleLoad())
 }

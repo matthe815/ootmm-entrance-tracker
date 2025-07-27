@@ -3,7 +3,7 @@ import LocationNode from "../types/LocationNode";
 import Locations from "./Locations";
 import {MappedEntrance} from "../types/LocationMapping";
 import chalk from 'chalk';
-import Saves, {Save} from "./Saves";
+import Saves from "./Saves";
 import {readFileSync} from "fs";
 import path from "node:path";
 

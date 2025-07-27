@@ -116,7 +116,7 @@ class Saves {
         ConsoleInput.Log('GAME_SAVED')
     }
 
-    public static Load(uuid: string): Promise<void> {
+    public static Load(uuid: string): Promise<Save> {
         return new Promise((resolve, reject): void => {
             let filePath: string = path.resolve(SAVE_DIRECTORY, `${uuid}.json`)
             if (!fs.existsSync(filePath)) {
@@ -132,7 +132,8 @@ class Saves {
                 this.current.AddGroup(parsedSave)
                 ConsoleInput.Log('UPDATE_SAVED')
                 Saves.Save()
-                resolve()
+                resolve(this.current)
+                return
             }
 
             this.current.AddGroup(parsedSave.locations)
@@ -140,14 +141,14 @@ class Saves {
             if (this.current.connection) {
                 ConnectToServer(this.current.connection)
                     .then((): void => {
-                        UpdateAll().then(() => resolve())
+                        UpdateAll().then((): void => { if (this.current) resolve(this.current) })
                     })
                     .catch(() => ConsoleInput.Error('ERROR_CONNECT'))
 
                 return
             }
 
-            resolve()
+            resolve(this.current)
         })
     }
 

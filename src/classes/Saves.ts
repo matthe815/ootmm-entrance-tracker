@@ -31,7 +31,7 @@ class Save {
     }
 
     public Fill(save: SerializedSave): void {
-        this.spawn = this.Get(save.spawn) ?? this.locations[0]
+        this.spawn = this.Get(save.spawn ?? 'Kokiri Forest') ?? this.locations[0]
         this.connection = save.connection
     }
 
@@ -69,6 +69,7 @@ class Save {
         return {
             uuid: this.uuid,
             spawn: this.GetSpawn().name,
+            connection: this.connection,
             locations: this.locations.map((location: LocationNode): SerializedLocation => ({
                 name: location.name,
                 entrances: location.connections.map((entrance: Entrance) => ({ name: entrance.name, location: entrance.location.name }))

@@ -4,12 +4,40 @@ import Locations from "./Locations";
 import {MappedEntrance} from "../types/LocationMapping";
 import chalk from 'chalk';
 import Saves from "./Saves";
+import {readFileSync} from "fs";
+import path from "node:path";
 
 class ConsoleInput {
     public static command = chalk.yellow
     public static location = chalk.green
     public static network = chalk.bold
     static inputLine: Interface
+
+    public static LANG_EN = JSON.parse(String(readFileSync(path.resolve("lang", "en_us.json"))))
+
+    public static GetMessage(key: string, placeholders?: string[]) {
+        if (!this.LANG_EN[key]) return key
+
+        let message: string = this.LANG_EN[key]
+
+        if (placeholders && placeholders.length > 0) {
+            let placeholder: string
+            for (placeholder of placeholders) {
+                if (!message.includes('%s')) continue
+                message = message.replace('%s', placeholder)
+            }
+        }
+
+        return message
+    }
+
+    public static Log(key: string, placeholders?: string[]): void {
+        console.error(this.GetMessage(key, placeholders))
+    }
+
+    public static Error(key: string, placeholders?: string[]): void {
+        console.error(chalk.red(this.GetMessage(key, placeholders)))
+    }
 
     public static StartInput(completer?: (line: string) => [string[], string]): void {
         this.inputLine = readline.createInterface({

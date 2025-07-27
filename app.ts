@@ -84,7 +84,7 @@ function FindPathToTarget(start: LocationNode, target: LocationNode): PathStep[]
 
 function handleLink(): void {
     if (!Saves.IsFileLoaded()) {
-        console.error(chalk.red('You must select a file before you can do this.'))
+        ConsoleInput.Error('ERROR_SELECT_FILE')
         CreateCommandLine()
         return
     }

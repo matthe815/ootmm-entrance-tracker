@@ -7,12 +7,14 @@ import Locations from "./Locations";
 import Entrance from "../types/Entrance";
 import {MappedLocation} from "../types/LocationMapping";
 import ConsoleInput from "./ConsoleInput";
+import {ConnectToServer, UpdateAll} from "../../utils/NetUtils";
 
 const SAVE_DIRECTORY: string = path.resolve("saves")
 
 type SerializedSave = {
     uuid: string
     spawn: string
+    connection?: string
     locations: SerializedLocation[]
 }
 
@@ -20,11 +22,17 @@ class Save {
     public uuid: string
     public locations: LocationNode[]
     public spawn: LocationNode
+    public connection?: string
 
-    constructor(uuid: string, spawn: string, locations: LocationNode[]) {
+    constructor(uuid: string, locations: LocationNode[]) {
         this.uuid = uuid
         this.locations = locations
-        this.spawn = this.Get(spawn) ?? this.locations[0]
+        this.spawn = this.locations[0]
+    }
+
+    public Fill(save: SerializedSave): void {
+        this.spawn = this.Get(save.spawn) ?? this.locations[0]
+        this.connection = save.connection
     }
 
     public Get(name: string): LocationNode | null {
@@ -87,7 +95,7 @@ class Saves {
 
     public static Create(uuid?: string): string {
         if (!uuid) uuid = crypto.pseudoRandomBytes(3).toString('hex')
-        this.current = new Save(uuid, "Kokiri Forest", Locations.GetDefault())
+        this.current = new Save(uuid, Locations.GetDefault())
 
         Saves.Save()
         console.log(`Created new entrance randomizer game instance with UUID of ${uuid}.`)
@@ -112,7 +120,8 @@ class Saves {
         if (!fs.existsSync(filePath)) return false
 
         const parsedSave = JSON.parse(String(fs.readFileSync(filePath)))
-        this.current = new Save(uuid, parsedSave.spawn ?? "Kokiri Forest", Locations.GetDefault())
+        this.current = new Save(uuid, Locations.GetDefault())
+        this.current.Fill(parsedSave)
 
         if (Array.isArray(parsedSave)) {
             this.current.AddGroup(parsedSave)
@@ -122,6 +131,13 @@ class Saves {
         }
 
         this.current.AddGroup(parsedSave.locations)
+
+        if (this.current.connection) {
+            ConnectToServer(this.current.connection)
+                .then(() => UpdateAll())
+                .catch(() => ConsoleInput.Error('ERROR_CONNECT'))
+        }
+
         return true
     }
 

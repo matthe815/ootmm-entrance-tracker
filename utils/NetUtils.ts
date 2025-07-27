@@ -81,7 +81,13 @@ export function ConnectToServer(host: string): Promise<void> {
     return new Promise((resolve, reject): void => {
         serverConnection = connect(13234, host, (): void  => {
             console.log("Successfully connected to sync server.")
+
             ConnectionHistory.Add(host)
+            if (Saves.current) {
+                Saves.current.connection = host
+                Saves.Save()
+            }
+
             serverConnection.on("data", HandleServerPacket)
             resolve()
         }).on('error', reject)

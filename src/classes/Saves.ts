@@ -18,7 +18,7 @@ type SerializedSave = {
     locations: SerializedLocation[]
 }
 
-class Save {
+export class Save {
     public uuid: string
     public locations: LocationNode[]
     public spawn: LocationNode
@@ -31,7 +31,7 @@ class Save {
     }
 
     public Fill(save: SerializedSave): void {
-        this.spawn = this.Get(save.spawn) ?? this.locations[0]
+        this.spawn = this.Get(save.spawn ?? 'Kokiri Forest') ?? this.locations[0]
         this.connection = save.connection
     }
 
@@ -69,6 +69,7 @@ class Save {
         return {
             uuid: this.uuid,
             spawn: this.GetSpawn().name,
+            connection: this.connection,
             locations: this.locations.map((location: LocationNode): SerializedLocation => ({
                 name: location.name,
                 entrances: location.connections.map((entrance: Entrance) => ({ name: entrance.name, location: entrance.location.name }))
@@ -78,7 +79,7 @@ class Save {
 }
 
 class Saves {
-    public static current?: Save | null = null
+    public static current: Save | null = null
 
     public static IsFileLoaded(): boolean {
         return this.current !== null
@@ -88,7 +89,7 @@ class Saves {
         let location: MappedLocation
         for (location of Locations.entrances) {
             if (Locations.GetDefault().find((l: LocationNode): boolean => l.name === location.name)) continue
-            console.log(`Added missing location \`${ConsoleInput.location(location.name)}\` to local save.`)
+            ConsoleInput.Log('LOCATION_ADDED', [ConsoleInput.location(location.name)])
             Locations.GetDefault().push({ name: location.name, connections: [] })
         }
     }
@@ -98,7 +99,7 @@ class Saves {
         this.current = new Save(uuid, Locations.GetDefault())
 
         Saves.Save()
-        console.log(`Created new entrance randomizer game instance with UUID of ${uuid}.`)
+        ConsoleInput.Log('GAME_CREATED', [uuid])
 
         return uuid
     }
@@ -112,33 +113,42 @@ class Saves {
 
         const save: SerializedSave = this.current.Serialize()
         fs.writeFileSync(path.resolve(SAVE_DIRECTORY, `${this.current.uuid}.json`), JSON.stringify(save))
-        console.log('Tracker progress saved successfully.')
+        ConsoleInput.Log('GAME_SAVED')
     }
 
-    public static Load(uuid: string): boolean {
-        let filePath: string = path.resolve(SAVE_DIRECTORY, `${uuid}.json`)
-        if (!fs.existsSync(filePath)) return false
+    public static Load(uuid: string): Promise<void> {
+        return new Promise((resolve, reject): void => {
+            let filePath: string = path.resolve(SAVE_DIRECTORY, `${uuid}.json`)
+            if (!fs.existsSync(filePath)) {
+                reject()
+                return
+            }
 
-        const parsedSave = JSON.parse(String(fs.readFileSync(filePath)))
-        this.current = new Save(uuid, Locations.GetDefault())
-        this.current.Fill(parsedSave)
+            const parsedSave = JSON.parse(String(fs.readFileSync(filePath)))
+            this.current = new Save(uuid, Locations.GetDefault())
+            this.current.Fill(parsedSave)
 
-        if (Array.isArray(parsedSave)) {
-            this.current.AddGroup(parsedSave)
-            console.log('Successfully converted v1 save to a valid v2 save - overwriting file.')
-            Saves.Save()
-            return true
-        }
+            if (Array.isArray(parsedSave)) {
+                this.current.AddGroup(parsedSave)
+                ConsoleInput.Log('UPDATE_SAVED')
+                Saves.Save()
+                resolve()
+            }
 
-        this.current.AddGroup(parsedSave.locations)
+            this.current.AddGroup(parsedSave.locations)
 
-        if (this.current.connection) {
-            ConnectToServer(this.current.connection)
-                .then(() => UpdateAll())
-                .catch(() => ConsoleInput.Error('ERROR_CONNECT'))
-        }
+            if (this.current.connection) {
+                ConnectToServer(this.current.connection)
+                    .then((): void => {
+                        UpdateAll().then(() => resolve())
+                    })
+                    .catch(() => ConsoleInput.Error('ERROR_CONNECT'))
 
-        return true
+                return
+            }
+
+            resolve()
+        })
     }
 
     public static GetAll(): string[] {

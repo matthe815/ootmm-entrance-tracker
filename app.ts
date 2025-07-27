@@ -5,7 +5,7 @@ import Entrance from "./src/types/Entrance";
 import PathStep from "./src/types/PathStep";
 import {MappedEntrance} from "./src/types/LocationMapping";
 import EntranceLinks from "./src/classes/EntranceLinks";
-import Saves from "./src/classes/Saves";
+import Saves, {Save} from "./src/classes/Saves";
 import ConsoleInput from "./src/classes/ConsoleInput";
 import {
     ConnectToServer, DisconnectFromServer,
@@ -39,7 +39,7 @@ function CreateCommandLine(): void {
         }
     });
 
-    console.log(`Type \`${ConsoleInput.command('help')}\` to see available commands.`);
+    ConsoleInput.Log('STARTUP_MESSAGE', [ConsoleInput.command('help')])
     commandLine.prompt();
     commandLine.once('line', (line: string) => {
         commandLine.close()
@@ -83,22 +83,24 @@ function FindPathToTarget(start: LocationNode, target: LocationNode): PathStep[]
 }
 
 function handleLink(): void {
+    const entranceMapper = (e: MappedEntrance, index: number): string => `(${index + 1}) ${ConsoleInput.location(e.name)}`
+
     if (!Saves.IsFileLoaded()) {
         ConsoleInput.Error('ERROR_SELECT_FILE')
         CreateCommandLine()
         return
     }
 
-    console.log('Enter the initial area name.')
+    ConsoleInput.Log('INPUT_LINKAREA1')
     ConsoleInput.GetAreaInput(areaAutoCompleter).then((area: LocationNode): void => {
-        console.log('Which exit must be taken?')
-        console.log(Locations.GetUnlinkedEntrances(area)?.map((e: MappedEntrance, index: number): string => `(${index + 1}) ${e.name}`)?.join("\n"))
+        ConsoleInput.Log('INPUT_LINKENTRANCE1')
+        console.log(Locations.GetUnlinkedEntrances(area)?.map(entranceMapper).join("\n"))
         ConsoleInput.GetExitInput(area).then((exit: MappedEntrance): void => {
-            console.log(`Enter the connected location.`);
+            ConsoleInput.Log('INPUT_LINKAREA2')
             ConsoleInput.GetAreaInput(areaAutoCompleter).then((connection: LocationNode): void => {
-                console.log('Where does this exit lead to?')
-                console.log(Locations.GetUnlinkedEntrances(connection)?.map((e: MappedEntrance, index: number): string => `(${index + 1}) ${e.name}`)?.join("\n"))
-                ConsoleInput.GetExitInput(connection).then((connectionEntrance: MappedEntrance) => {
+                ConsoleInput.Log('INPUT_LINKENTRANCE2')
+                console.log(Locations.GetUnlinkedEntrances(connection)?.map(entranceMapper).join("\n"))
+                ConsoleInput.GetExitInput(connection).then((connectionEntrance: MappedEntrance): void => {
                     const entrance: Entrance = { name: connectionEntrance.name, location: area }
                     const connector: Entrance = { name: exit.name, location: connection }
                     EntranceLinks.Add(entrance, connector)
@@ -111,23 +113,23 @@ function handleLink(): void {
 
 function handlePath(): void {
     if (!Saves.IsFileLoaded()) {
-        console.error(chalk.red('You must select a file before you can do this.'))
+        ConsoleInput.Error('ERROR_SELECT_FILE')
         CreateCommandLine()
         return
     }
 
-    console.log('Enter the name of the area for which you want a route to.')
+    ConsoleInput.Log('INPUT_PATHAREA')
     ConsoleInput.GetAreaInput(areaAutoCompleter).then((input: LocationNode): void => {
-        console.log(`Choose the location to path from. Enter \`${ConsoleInput.command('spawn')}\` for ${ConsoleInput.location('Kokiri Forest')}`)
+        ConsoleInput.Log('INPUT_PATHAREA2', [ConsoleInput.command('spawn'), ConsoleInput.location('Kokiri Forest')])
         const area: LocationNode = input as LocationNode
         ConsoleInput.GetAreaInput(areaAutoCompleter).then((input: LocationNode): void => {
             const current: LocationNode = input as LocationNode
             let path = FindPathToTarget(current, area)
             if (path) {
-                console.log(`Found path to ${ConsoleInput.location(area.name)}`)
+                ConsoleInput.Log('SUCCESS_PATH', [ConsoleInput.location(area.name)])
                 console.log(path.map((n: PathStep): string => `${ConsoleInput.location(n.location.name)} ${n.via ? `(${n.via})` : ''}`).join(' => '))
             } else {
-                console.log(`Could not find path to ${ConsoleInput.location(current.name)} from ${ConsoleInput.location(area.name)}`)
+                ConsoleInput.Error('ERROR_PATH', [ConsoleInput.location(current.name), ConsoleInput.location(area.name)])
             }
             CreateCommandLine()
         })
@@ -136,7 +138,7 @@ function handlePath(): void {
 
 function handleList(): void {
     if (!Saves.current || !Saves.IsFileLoaded()) {
-        console.error(chalk.red('You must select a file before you can do this.'))
+        ConsoleInput.Error('ERROR_SELECT_FILE')
         CreateCommandLine()
         return
     }
@@ -154,12 +156,12 @@ function handleList(): void {
 function handleLoad(): void {
     ConsoleInput.GetGameInput()
         .then((): void => {
-            const save = Saves.current
+            const save: Save | null = Saves.current
             if (!save) return
 
             let totalLocations: number = save.locations.length
             let totalEntrances: number = save.locations.map((l: LocationNode) => l.connections.length).reduce((previous: number, current: number) => previous + current)
-            console.log(`Successfully loaded save with ${totalLocations} and ${totalEntrances} entrances.`)
+            ConsoleInput.Log('SUCCESS_LOAD', [String(totalLocations), String(totalEntrances)])
             CreateCommandLine()
         })
         .catch(() => handleLoad())
@@ -167,16 +169,16 @@ function handleLoad(): void {
 
 function handleJoin(): void {
     if (!IsConnectedToServer()) {
-        console.error(chalk.red('You must be connected to a server before you can do this'))
+        ConsoleInput.Error('ERROR_CONNECTION')
         CreateCommandLine()
         return
     }
 
-    console.log('Enter the UUID of the game for which to join.')
+    ConsoleInput.Log('INPUT_UUID')
     ConsoleInput.GetTextInput()
         .then((input: string): void => {
             if (input.length != 6) {
-                console.error(chalk.red('The supplied UUID is not valid.'))
+                ConsoleInput.Error('ERROR_UUID', [input])
                 handleJoin()
                 return
             }
@@ -200,33 +202,33 @@ function connectAutoCompleter(line: string): [string[], string] {
 
 function handleDisconnect(): void {
     if (!IsConnectedToServer()) {
-        console.error(chalk.red('You are not currently connected to a sync server.'))
+        ConsoleInput.Error('ERROR_CONNECTION')
         return
     }
 
     DisconnectFromServer()
-    console.log('Successfully disconnected from sync server.')
+    ConsoleInput.Log('DISCONNECTED')
     CreateCommandLine()
 }
 
 function handleConnect(): void {
     const connectionHistory: string[] = ConnectionHistory.Get()
-    console.log('Input the IP address of the server to connect to.')
+    ConsoleInput.Log('INPUT_IP')
     console.log(`Press enter without any input for ${ConsoleInput.network('localhost')}.`)
 
     if (connectionHistory.length > 0) {
-        console.log('These are the servers you\'ve previously connected to. This input supports tab-completion.')
+        ConsoleInput.Log('PREVIOUS_ADDRESSES')
         console.log(connectionHistory.map((loc: string): string => `${ConsoleInput.network(loc)}`).join("\n"))
     }
 
     ConsoleInput.GetTextInput(connectAutoCompleter).then((input: string): void => {
         input = ParseConnectionPlaceholders(input)
-        console.log(`Attempting to connect to ${ConsoleInput.network(input)}:13234...`)
+        ConsoleInput.Log('ATTEMPT_CONNECTION', [ConsoleInput.network(input)])
 
         ConnectToServer(input)
             .then(CreateCommandLine)
             .catch((): void => {
-                console.error(chalk.red('Failed to connect to provided sync server.'))
+                ConsoleInput.Error('CONNECTION_FAILURE')
                 CreateCommandLine()
             })
     })
@@ -286,7 +288,13 @@ const commands: Command[] = [
         help_text: 'Sync your local save with the server\'s current save',
         executor: () => {
             if (!Saves.IsFileLoaded()) {
-                console.error(chalk.red('You must load a file before you can do this.'))
+                ConsoleInput.Error('ERROR_SELECT_FILE')
+                CreateCommandLine()
+                return
+            }
+
+            if (!IsConnectedToServer() ){
+                ConsoleInput.Error('ERROR_CONNECTION')
                 CreateCommandLine()
                 return
             }

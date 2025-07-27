@@ -9,6 +9,7 @@ import chalk from "chalk";
 import Saves from "../src/classes/Saves";
 import {clearTimeout} from "timers";
 import ConnectionHistory from "../src/classes/ConnectionHistory";
+import ConsoleInput from "../src/classes/ConsoleInput";
 
 let serverConnection: Socket
 
@@ -54,11 +55,11 @@ function HandleServerPacket(chunk: Buffer): void {
                                 name: entrance.name,
                                 location: linkedLocation
                             })
-                            console.log(`🆕 Stored new entrance: ${location.name} (${entrance.name})`);
+                            ConsoleInput.Log('STORE_LOCATION', [ConsoleInput.location(location.name), entrance.name])
                         }
                     }
                 } catch (err) {
-                    console.error('Failed to parse location:', err);
+                    ConsoleInput.Error('ERROR_LOCATION')
                 }
             }
             if (updated) Saves.Save()
@@ -80,7 +81,7 @@ export function DisconnectFromServer(): void {
 export function ConnectToServer(host: string): Promise<void> {
     return new Promise((resolve, reject): void => {
         serverConnection = connect(13234, host, (): void  => {
-            console.log("Successfully connected to sync server.")
+            ConsoleInput.Log('SUCCESS_CONNECT')
 
             ConnectionHistory.Add(host)
             if (Saves.current) {
@@ -205,7 +206,7 @@ export function RequestUpdate(): void {
 export function UpdateGroup(nodes: LocationNode[]): Promise<void> {
     return new Promise((resolve, reject): void => {
         if (!IsConnectedToServer()) {
-            reject('You are not currently connected to a sync server.')
+            reject(ConsoleInput.GetMessage('ERROR_CONNECTION'))
             return
         }
 
@@ -252,7 +253,7 @@ async function SendQueue(queue: any[][]): Promise<void> {
 export function UpdateAll(): Promise<void> {
     return new Promise((resolve, reject): void => {
         if (!Saves.current || !IsConnectedToServer()) {
-            reject('You are not currently connected to a sync server.')
+            reject(ConsoleInput.GetMessage('ERROR_CONNECTION'))
             return
         }
 

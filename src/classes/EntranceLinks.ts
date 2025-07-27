@@ -1,6 +1,7 @@
 import Entrance from "../types/Entrance";
 import Saves from "./Saves";
 import {IsConnectedToServer, UpdateGroup} from "../../utils/NetUtils";
+import ConsoleInput from "./ConsoleInput";
 
 class EntranceLinks {
     public static Add(entrance: Entrance, exit: Entrance) {
@@ -9,7 +10,7 @@ class EntranceLinks {
 
         if (IsConnectedToServer()) UpdateGroup([ entrance.location, exit.location ])
 
-        console.log(`🆕 Linked ${exit.location.name} to ${entrance.location.name}`)
+        ConsoleInput.Log('SUCCESS_LINKED', [exit.location.name, entrance.location.name])
         Saves.Save()
     }
 

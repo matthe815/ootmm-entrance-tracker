@@ -169,7 +169,7 @@ function handleLoad(): void {
 
 function handleJoin(): void {
     if (!IsConnectedToServer()) {
-        console.error(chalk.red('You must be connected to a server before you can do this'))
+        ConsoleInput.Error('ERROR_CONNECTION')
         CreateCommandLine()
         return
     }
@@ -202,7 +202,7 @@ function connectAutoCompleter(line: string): [string[], string] {
 
 function handleDisconnect(): void {
     if (!IsConnectedToServer()) {
-        console.error(chalk.red('You are not currently connected to a sync server.'))
+        ConsoleInput.Error('ERROR_CONNECTION')
         return
     }
 
@@ -288,7 +288,13 @@ const commands: Command[] = [
         help_text: 'Sync your local save with the server\'s current save',
         executor: () => {
             if (!Saves.IsFileLoaded()) {
-                console.error(chalk.red('You must load a file before you can do this.'))
+                ConsoleInput.Error('ERROR_SELECT_FILE')
+                CreateCommandLine()
+                return
+            }
+
+            if (!IsConnectedToServer() ){
+                ConsoleInput.Error('ERROR_CONNECTION')
                 CreateCommandLine()
                 return
             }

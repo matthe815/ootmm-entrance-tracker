@@ -18,6 +18,8 @@ export function ParseConnectionPlaceholders(host: string): string {
 }
 
 function HandleServerPacket(chunk: Buffer): void {
+    if (!Saves.current) return
+
     const op: number = chunk[0]
     let dataBuffer: Buffer = Buffer.alloc(0);
     dataBuffer = Buffer.concat([dataBuffer, chunk]).subarray(1);
@@ -36,7 +38,7 @@ function HandleServerPacket(chunk: Buffer): void {
                     const { location } = deserializeLocation(chunk);
 
                     let savedLoc: LocationNode | undefined
-                    if ((savedLoc = Locations.all.find((l: LocationNode): boolean => l.name === location.name))) {
+                    if ((savedLoc = Saves.current.locations.find((l: LocationNode): boolean => l.name === location.name))) {
                         let entrance: { name: string, location: string }
                         for (entrance of location.entrances) {
                             if (entrance.name === '') continue
@@ -79,7 +81,13 @@ export function ConnectToServer(host: string): Promise<void> {
     return new Promise((resolve, reject): void => {
         serverConnection = connect(13234, host, (): void  => {
             console.log("Successfully connected to sync server.")
+
             ConnectionHistory.Add(host)
+            if (Saves.current) {
+                Saves.current.connection = host
+                Saves.Save()
+            }
+
             serverConnection.on("data", HandleServerPacket)
             resolve()
         }).on('error', reject)
@@ -145,7 +153,7 @@ class NetSerializer {
     }
 
     public static WriteChunksToBuffer(op: number, chunks: any[]): Uint8Array {
-        if (!Saves.CURRENT_UUID) return new Uint8Array(0)
+        if (!Saves.current) return new Uint8Array(0)
         const totalLength = chunks.reduce((sum, arr) => sum + arr.length, 0) + 4
         const buffer: Uint8Array = new Uint8Array(totalLength)
 
@@ -155,7 +163,7 @@ class NetSerializer {
             offset += chunk.length
         }
 
-        buffer.set(Uint8Array.from([op, ...SerializeStringToHex(Saves.CURRENT_UUID)]), 0)
+        buffer.set(Uint8Array.from([op, ...SerializeStringToHex(Saves.current.uuid)]), 0)
         return buffer
     }
 }
@@ -189,8 +197,8 @@ export function SerializeStringToHex(hexString: string): Uint8Array {
 }
 
 export function RequestUpdate(): void {
-    if (!Saves.CURRENT_UUID) return
-    const buffer: Buffer = Buffer.from(Uint8Array.from([0x02, ...SerializeStringToHex(Saves.CURRENT_UUID)]))
+    if (!Saves.current) return
+    const buffer: Buffer = Buffer.from(Uint8Array.from([0x02, ...SerializeStringToHex(Saves.current.uuid)]))
     serverConnection.write(buffer)
 }
 
@@ -243,7 +251,7 @@ async function SendQueue(queue: any[][]): Promise<void> {
 
 export function UpdateAll(): Promise<void> {
     return new Promise((resolve, reject): void => {
-        if (!IsConnectedToServer()) {
+        if (!Saves.current || !IsConnectedToServer()) {
             reject('You are not currently connected to a sync server.')
             return
         }
@@ -252,7 +260,7 @@ export function UpdateAll(): Promise<void> {
         let locationQueue: LocationNode[] = []
 
         let location: LocationNode
-        for (location of Locations.all) {
+        for (location of Saves.current.locations) {
             locationQueue.push(location)
             if (locationQueue.length >= 8) {
                 sendQueue.push([...locationQueue])

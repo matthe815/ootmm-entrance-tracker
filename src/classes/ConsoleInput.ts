@@ -3,14 +3,41 @@ import LocationNode from "../types/LocationNode";
 import Locations from "./Locations";
 import {MappedEntrance} from "../types/LocationMapping";
 import chalk from 'chalk';
-import fs from "fs";
 import Saves from "./Saves";
+import {readFileSync} from "fs";
+import path from "node:path";
 
 class ConsoleInput {
     public static command = chalk.yellow
     public static location = chalk.green
     public static network = chalk.bold
     static inputLine: Interface
+
+    public static LANG_EN = JSON.parse(String(readFileSync(path.resolve("lang", "en_us.json"))))
+
+    public static GetMessage(key: string, placeholders?: string[]) {
+        if (!this.LANG_EN[key]) return key
+
+        let message: string = this.LANG_EN[key]
+
+        if (placeholders && placeholders.length > 0) {
+            let placeholder: string
+            for (placeholder of placeholders) {
+                if (!message.includes('%s')) continue
+                message = message.replace('%s', placeholder)
+            }
+        }
+
+        return message
+    }
+
+    public static Log(key: string, placeholders?: string[]): void {
+        console.error(this.GetMessage(key, placeholders))
+    }
+
+    public static Error(key: string, placeholders?: string[]): void {
+        console.error(chalk.red(this.GetMessage(key, placeholders)))
+    }
 
     public static StartInput(completer?: (line: string) => [string[], string]): void {
         this.inputLine = readline.createInterface({
@@ -28,9 +55,9 @@ class ConsoleInput {
         this.inputLine.close()
     }
 
-    public static GetGameInput(completer?: (line: string) => [string[], string]): Promise<LocationNode[]> {
+    public static GetGameInput(completer?: (line: string) => [string[], string]): Promise<void> {
         return new Promise((resolve, reject): void => {
-            const files: string[] = fs.readdirSync(Saves.SAVE_LOCATION)
+            const files: string[] = Saves.GetAll()
             console.log('Select the saved game to load.')
 
             let file: string, count: number = 1
@@ -46,33 +73,30 @@ class ConsoleInput {
                 let inputtedNumber: number = parseInt(input)
                 if (isNaN(inputtedNumber)) {
                     ConsoleInput.StopInput()
-                    console.error(chalk.red(`The supplied index ${input} is not a number.`))
-                    reject()
+                    reject(`The supplied index ${input} is not a number.`)
                     return
                 }
 
                 if (inputtedNumber === (count)) {
                     ConsoleInput.StopInput()
                     Saves.Create()
-                    resolve(Locations.all)
+                    resolve()
                     return
                 }
                 else if (inputtedNumber > count) {
                     ConsoleInput.StopInput()
-                    console.error(chalk.red(`There is no save at index ${input}.`))
-                    reject()
+                    reject(`There is no save at index ${input}.`)
                     return
                 }
 
                 let uuid: string = files[inputtedNumber - 1].split(".")[0]
                 if (!Saves.Load(uuid)) {
-                    console.error(chalk.red('The save requested to be loaded is invalid.'))
-                    reject()
+                    reject('The save requested to be loaded is invalid.')
                     return
                 }
 
                 ConsoleInput.StopInput()
-                resolve(Locations.all)
+                resolve()
             })
         })
     }
@@ -83,13 +107,15 @@ class ConsoleInput {
             if (!this.inputLine) return
 
             this.inputLine.on("line", (input: string): void => {
-                if (input.toLowerCase() === 'spawn') {
+                if (!Saves.current) return;
+
+                if (input.toLowerCase() === 'spawn' && Saves.current) {
                     ConsoleInput.StopInput()
-                    resolve(Locations.spawn)
+                    resolve(Saves.current.GetSpawn())
                     return
                 }
 
-                const area: LocationNode | null = Locations.Find(input)
+                const area: LocationNode | null = Saves.current.Get(input)
                 if (!area) {
                     console.log('Invalid area name provided.')
                     return

@@ -1,5 +1,6 @@
 {
  "STARTUP_MESSAGE": "Type `%s` to see available commands.",
+ "DISCONNECTED": "You've disconnected from sync server.",
 
  "SUCCESS_LOAD": "Successfully loaded save with %s locations and %s entrances.",
 
@@ -7,7 +8,9 @@
  "INPUT_LINKENTRANCE1": "Type the number associated with the entrance to connect.",
  "INPUT_LINKAREA2": "Type the name of the exiting area to connect. You may use tab completion.",
  "INPUT_LINKENTRANCE2": "Type the number associated with the exit to connect.",
+ "INPUT_UUID": "Type the UUID of the game you want to join.",
 
  "ERROR_SELECT_FILE": "You must select a file to load before you may do this.",
- "ERROR_CONNECTION": "You must be connected to a sync server before you may do this."
+ "ERROR_CONNECTION": "You must be connected to a sync server before you may do this.",
+ "ERROR_UUID": "The UUID `%s` is not of a valid format. The UUID is a 6 letter or digit string."
 }

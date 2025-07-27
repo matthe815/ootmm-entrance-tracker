@@ -174,11 +174,11 @@ function handleJoin(): void {
         return
     }
 
-    console.log('Enter the UUID of the game for which to join.')
+    ConsoleInput.Log('INPUT_UUID')
     ConsoleInput.GetTextInput()
         .then((input: string): void => {
             if (input.length != 6) {
-                console.error(chalk.red('The supplied UUID is not valid.'))
+                ConsoleInput.Error('ERROR_UUID', [input])
                 handleJoin()
                 return
             }
@@ -207,7 +207,7 @@ function handleDisconnect(): void {
     }
 
     DisconnectFromServer()
-    console.log('Successfully disconnected from sync server.')
+    ConsoleInput.Log('DISCONNECTED')
     CreateCommandLine()
 }
 

@@ -116,7 +116,7 @@ class Saves {
         console.log('Tracker progress saved successfully.')
     }
 
-    public static Load(uuid: string): Promise<boolean> {
+    public static Load(uuid: string): Promise<void> {
         return new Promise((resolve, reject): void => {
             let filePath: string = path.resolve(SAVE_DIRECTORY, `${uuid}.json`)
             if (!fs.existsSync(filePath)) {
@@ -147,7 +147,7 @@ class Saves {
                 return
             }
 
-            resolve(0)
+            resolve()
         })
     }
 

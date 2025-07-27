@@ -1,16 +1,31 @@
 {
  "STARTUP_MESSAGE": "Type `%s` to see available commands.",
  "DISCONNECTED": "You've disconnected from sync server.",
+ "STORE_LOCATION": "Stored new entrance: ${location.name} (${entrance.name})",
+ "PREVIOUS_ADDRESSES": "Listed below are the servers you've connected to in the past. You may use tab completion.",
+ "ATTEMPT_CONNECTION": "Attempting connection to server at %s:13234...",
 
+ "SUCCESS_PATH": "Found the shortest path to %s.",
  "SUCCESS_LOAD": "Successfully loaded save with %s locations and %s entrances.",
+ "SUCCESS_CONNECT": "Successfully connected to the sync server.",
+ "SUCCESS_LINKED": "Successfully linked %s to %s.",
 
  "INPUT_LINKAREA1": "Type the name of the first area to connect. You may use tab completion.",
  "INPUT_LINKENTRANCE1": "Type the number associated with the entrance to connect.",
  "INPUT_LINKAREA2": "Type the name of the exiting area to connect. You may use tab completion.",
  "INPUT_LINKENTRANCE2": "Type the number associated with the exit to connect.",
+ "INPUT_PATHAREA": "Type the name of the area you would like the route to. You may use tab completion.",
+ "INPUT_PATHAREA2": "Type the name of the area you're currently in. Enter `%s` for `%s`.",
  "INPUT_UUID": "Type the UUID of the game you want to join.",
+ "INPUT_IP": "Type the IP address of the server you want to connect to.",
 
+ "UNKNOWN_AREA": "The area you have requested does not exist.",
+ "UNKNOWN_ENTRANCE": "The entrance you have requested does not exist.",
+
+ "CONNECTION_FAILURE": "Could not to connect to the sync server.",
  "ERROR_SELECT_FILE": "You must select a file to load before you may do this.",
  "ERROR_CONNECTION": "You must be connected to a sync server before you may do this.",
- "ERROR_UUID": "The UUID `%s` is not of a valid format. The UUID is a 6 letter or digit string."
+ "ERROR_UUID": "The UUID `%s` is not of a valid format. The UUID is a 6 letter or digit string.",
+ "ERROR_LOCATION": "Failed to parse location",
+ "ERROR_PATH": "Could not find any path to %s from %s. This usually means you're missing a linking area."
 }

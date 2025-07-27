@@ -117,7 +117,7 @@ class ConsoleInput {
 
                 const area: LocationNode | null = Saves.current.Get(input)
                 if (!area) {
-                    console.log('Invalid area name provided.')
+                    ConsoleInput.Error('UNKNOWN_AREA')
                     return
                 }
 
@@ -136,7 +136,7 @@ class ConsoleInput {
                 const exitId: number = (parseInt(input) - 1)
                 const entrance: MappedEntrance | null = Locations.FindEntranceByIndex(area, exitId)
                 if (!entrance) {
-                    console.log('Invalid index provided.')
+                    ConsoleInput.Error('UNKNOWN_ENTRANCE')
                     return
                 }
 

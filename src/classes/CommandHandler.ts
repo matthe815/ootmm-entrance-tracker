@@ -1,7 +1,13 @@
 import readline, {Interface} from "readline";
 import {commands} from "../commands/Definitions";
 import chalk from "chalk";
-import ConsoleInput, {Command} from "./ConsoleInput";
+import ConsoleInput from "./ConsoleInput";
+
+export type Command = {
+    name: string
+    help_text: string
+    executor: () => void
+}
 
 class CommandHandler {
     static commandLine: Interface

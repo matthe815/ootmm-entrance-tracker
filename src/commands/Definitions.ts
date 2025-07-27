@@ -1,4 +1,4 @@
-import ConsoleInput, {Command} from "../classes/ConsoleInput";
+import ConsoleInput from "../classes/ConsoleInput";
 import CommandLink from "./CommandLink";
 import CommandLoad from "./CommandLoad";
 import CommandJoin from "./CommandJoin";
@@ -11,7 +11,7 @@ import {IsConnectedToServer, RequestUpdate, UpdateAll} from "../../utils/NetUtil
 import chalk from "chalk";
 import Locations from "../classes/Locations";
 import fs from "fs";
-import CommandHandler from "../classes/CommandHandler";
+import CommandHandler, {Command} from "../classes/CommandHandler";
 
 export const commands: Command[] = [
     {

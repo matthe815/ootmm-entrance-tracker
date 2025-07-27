@@ -7,12 +7,6 @@ import Saves from "./Saves";
 import {readFileSync} from "fs";
 import path from "node:path";
 
-export type Command = {
-    name: string
-    help_text: string
-    executor: () => void
-}
-
 class ConsoleInput {
     public static command = chalk.yellow
     public static location = chalk.green

@@ -6,12 +6,20 @@ import chalk from 'chalk';
 import Saves from "./Saves";
 import {readFileSync} from "fs";
 import path from "node:path";
+import {commands} from "../commands/Definitions";
+
+export type Command = {
+    name: string
+    help_text: string
+    executor: () => void
+}
 
 class ConsoleInput {
     public static command = chalk.yellow
     public static location = chalk.green
     public static network = chalk.bold
     static inputLine: Interface
+    static commandLine: Interface
 
     public static LANG_EN = JSON.parse(String(readFileSync(path.resolve("lang", "en_us.json"))))
 
@@ -37,6 +45,41 @@ class ConsoleInput {
 
     public static Error(key: string, placeholders?: string[]): void {
         console.error(chalk.red(this.GetMessage(key, placeholders)))
+    }
+
+    public static StartCommandLine(): void {
+        ConsoleInput.commandLine = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+            prompt: '> ',
+            completer: (line: string): [string[], string] => {
+                const completions: string[] = commands.map((c: Command) => c.name)
+                const hits: string[] = completions.filter((completion: string) => completion.startsWith(line))
+
+                return [hits.length > 0 ? hits : completions, line]
+            }
+        });
+
+        ConsoleInput.Log('STARTUP_MESSAGE', [ConsoleInput.command('help')])
+        ConsoleInput.commandLine.prompt();
+        ConsoleInput.commandLine.once('line', (line: string) => {
+            ConsoleInput.commandLine.close()
+            this.HandleCommand(line);
+        })
+    }
+
+    static HandleCommand(line: string): void {
+        const input: string = line.trim()
+        const command: Command | null = commands.find((c: Command): boolean => c.name === input) ?? null
+
+        this.commandLine.close()
+        if (!command) {
+            console.error(chalk.red(`Unknown command: ${line}`))
+            ConsoleInput.StartCommandLine()
+            return
+        }
+
+        command.executor()
     }
 
     public static StartInput(completer?: (line: string) => [string[], string]): void {
@@ -91,7 +134,7 @@ class ConsoleInput {
 
     public static GetAreaInput(completer?: (line: string) => [string[], string]): Promise<LocationNode> {
         this.StartInput(completer)
-        return new Promise((resolve) => {
+        return new Promise((resolve): void => {
             if (!this.inputLine) return
 
             this.inputLine.on("line", (input: string): void => {
